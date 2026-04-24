@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes"/>
+  <title>桜 Sakura — Restaurante Japonés Auténtico</title>
+  <link rel="stylesheet" href="css/main.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;700;900&family=Shippori+Mincho+B1:wght@400;600;800&family=Zen+Kaku+Gothic+New:wght@300;400;700&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" id="navbar">
+    <a class="nav-brand" href="#inicio">
+      <span class="brand-kanji">桜</span>
+      <span class="brand-text">Sakura</span>
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="Abrir menú">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#inicio" class="nav-link">🏮 Inicio</a></li>
+      <li><a href="#menu" class="nav-link">🍱 Menú</a></li>
+      <li><a href="#reservaciones" class="nav-link">📅 Reservar</a></li>
+      <li><a href="#nosotros" class="nav-link">🌸 Nosotros</a></li>
+      <li><a href="#contacto" class="nav-link">📍 Contacto</a></li>
+      <li class="nav-auth-item">
+        <button class="btn-nav-login" id="btnNavLogin">⛩ Entrar</button>
+        <div class="nav-user-menu hidden" id="navUserMenu">
+          <span class="nav-username" id="navUsername">—</span>
+          <button class="btn-nav-logout" id="btnNavLogout">Salir</button>
+        </div>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- BANNER -->
+  <header id="inicio" class="banner">
+    <div class="banner-bg">
+      <div class="banner-overlay"></div>
+      <div class="petals-container" id="petalsContainer"></div>
+      <div class="banner-pattern"></div>
+    </div>
+    <div class="banner-content">
+      <p class="banner-eyebrow anim-up" style="--d:0s">— 本格的な日本料理 —</p>
+      <h1 class="banner-title anim-up" style="--d:.15s">
+        <span class="banner-kanji">桜</span>
+        <span class="banner-name">Sakura</span>
+      </h1>
+      <p class="banner-sub anim-up" style="--d:.3s">Sabores ancestrales del País del Sol Naciente</p>
+      <div class="banner-ctas anim-up" style="--d:.45s">
+        <a href="#menu" class="btn-primary">🍜 Ver Menú</a>
+        <a href="#reservaciones" class="btn-ghost">📅 Reservar Mesa</a>
+      </div>
+    </div>
+    <div class="banner-scroll">
+      <span class="scroll-kanji">下</span>
+      <div class="scroll-line"></div>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <!-- CATEGORÍAS -->
+    <div class="cats-strip">
+      <div class="container">
+        <div class="cats-row">
+          <button class="cat-pill active" data-cat="all">🍽 Todos</button>
+          <button class="cat-pill" data-cat="comidas">🍱 Comidas</button>
+          <button class="cat-pill" data-cat="postres">🍡 Postres</button>
+          <button class="cat-pill" data-cat="bebidas">🍶 Bebidas</button>
+          <button class="cat-pill" data-cat="snacks">🍢 Snacks</button>
+          <button class="cat-pill" data-cat="tradicionales">🍛 Tradicionales</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MENÚ -->
+    <section id="menu" class="s-menu">
+      <div class="container">
+        <header class="s-header">
+          <span class="s-tag">お品書き • Menú</span>
+          <h2 class="s-title">Nuestros Platillos</h2>
+          <p class="s-desc">Cada bocado es un viaje a Japón. Ingredientes frescos, técnicas ancestrales.</p>
+        </header>
+        <div class="menu-spinner" id="menuSpinner">
+          <div class="spinner-petal">🌸</div>
+          <p>Cargando desde Firebase…</p>
+        </div>
+        <div class="menu-grid" id="menuGrid"></div>
+      </div>
+    </section>
+
+    <!-- ASIDE ESPECIALES -->
+    <aside class="s-aside">
+      <div class="container">
+        <div class="aside-inner">
+          <div class="aside-text">
+            <span class="s-tag">今日のおすすめ</span>
+            <h3 class="aside-title">Especial del Chef</h3>
+            <p>Creaciones de temporada inspiradas en los grandes festivales japoneses. Disponibles solo hoy.</p>
+            <a href="#reservaciones" class="btn-primary">Reservar ahora 🎋</a>
+          </div>
+          <div class="aside-cards">
+            <div class="float-card"><span class="fc-emoji">🍣</span><div><strong>Omakase Premium</strong><small>Selección del chef · $580</small></div></div>
+            <div class="float-card" style="--fd:.4s"><span class="fc-emoji">🍜</span><div><strong>Ramen de Temporada</strong><small>Miso especial · $185</small></div></div>
+            <div class="float-card" style="--fd:.8s"><span class="fc-emoji">🍡</span><div><strong>Mochi Sakura</strong><small>Postre primaveral · $95</small></div></div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- RESERVACIONES -->
+    <section id="reservaciones" class="s-reservas">
+      <div class="container">
+        <header class="s-header">
+          <span class="s-tag">ご予約 • Reservaciones</span>
+          <h2 class="s-title">Reserva tu Mesa</h2>
+          <p class="s-desc">Garantiza tu experiencia Sakura. Área de fumar y no fumar disponibles.</p>
+        </header>
+        <div class="reservas-grid">
+          <div class="reserva-card" id="reservaCard">
+            <div class="need-login" id="needLogin">
+              <span class="nl-icon">🔐</span>
+              <p>Inicia sesión para poder reservar tu mesa</p>
+              <button class="btn-primary" onclick="UI.showModal('modalAuth')">Iniciar Sesión</button>
+            </div>
+            <form class="reserva-form hidden" id="reservaForm" novalidate>
+              <h3>Nueva Reservación</h3>
+              <div class="f-row">
+                <div class="f-group"><label>📅 Fecha</label><input type="date" id="rDate" required/></div>
+                <div class="f-group"><label>🕐 Hora entrada</label><input type="time" id="rTime" min="12:00" max="22:00" required/></div>
+              </div>
+              <div class="f-row">
+                <div class="f-group"><label>👥 Personas</label><select id="rPersons"><option value="1">1 persona</option><option value="2" selected>2 personas</option><option value="3">3 personas</option><option value="4">4 personas</option><option value="5">5 personas</option><option value="6">6+ personas</option></select></div>
+                <div class="f-group"><label>🚬 Área</label><select id="rArea"><option value="no-fumar">🚭 No Fumar</option><option value="fumar">🚬 Fumar</option></select></div>
+              </div>
+              <div class="f-group"><label>📝 Peticiones especiales</label><textarea id="rNotes" placeholder="Alergias, celebraciones, silla para bebé…"></textarea></div>
+              <div class="f-info">ℹ️ Reserva válida hasta <strong>3 horas</strong> desde tu entrada.</div>
+              <button type="submit" class="btn-primary btn-full" id="btnReservar">✓ Confirmar Reservación</button>
+            </form>
+          </div>
+          <div class="mis-reservas-card"><h3>📋 Mis Reservaciones</h3><div id="misReservas"><p class="empty-msg">Inicia sesión para ver tus reservaciones anteriores.</p></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- NOSOTROS -->
+    <section id="nosotros" class="s-nosotros">
+      <div class="container">
+        <div class="nosotros-grid">
+          <div class="nos-text">
+            <span class="s-tag">私たちについて</span>
+            <h2 class="s-title left">Nuestra Historia</h2>
+            <p>Desde 2008, Sakura es el destino para quienes buscan la autenticidad de la cocina japonesa. Nuestros chefs se formaron en Tokio, Osaka y Kyoto.</p>
+            <p>Usamos ingredientes importados directamente de Japón: dashi, miso artesanal, sake de primera calidad y arroz Koshihikari.</p>
+            <div class="nos-stats"><div class="stat"><strong>16+</strong><span>Años de experiencia</span></div><div class="stat"><strong>50</strong><span>Platillos auténticos</span></div><div class="stat"><strong>4.9⭐</strong><span>Calificación promedio</span></div></div>
+          </div>
+          <div class="nos-visual"><div class="nos-stack"><div class="ns-card ns1">🏯</div><div class="ns-card ns2">⛩</div><div class="ns-card ns3">🌸</div></div></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer id="contacto" class="footer">
+    <div class="footer-topline"></div>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="f-brand"><div class="footer-logo"><span>桜</span> Sakura</div><p>Auténtica cocina japonesa.<br>Sabores que trascienden el tiempo.</p><div class="socials"><a href="#" aria-label="Instagram">📸</a><a href="#" aria-label="Facebook">📘</a><a href="#" aria-label="TikTok">🎵</a></div></div>
+        <div class="f-col"><h4>Navegación</h4><ul><li><a href="#inicio">Inicio</a></li><li><a href="#menu">Menú</a></li><li><a href="#reservaciones">Reservar</a></li><li><a href="#nosotros">Nosotros</a></li></ul></div>
+        <div class="f-col"><h4>🕐 Horarios</h4><ul><li>Lun–Vie: 12:00 – 22:00</li><li>Sábado: 11:00 – 23:00</li><li>Domingo: 11:00 – 21:00</li></ul></div>
+        <div class="f-col"><h4>📍 Contacto</h4><ul><li>📞 +52 55 1234-5678</li><li>✉️ hola@sakura-resto.mx</li><li>📍 Av. Japón 42, CDMX</li></ul></div>
+      </div>
+      <div class="footer-bottom"><p>© 2025 Sakura Restaurante Japonés — Todos los derechos reservados</p><p id="devHint" class="dev-hint">🔧 Dev: Abre <kbd>F12</kbd> → Console para configurar Firebase automáticamente</p></div>
+    </div>
+  </footer>
+
+  <!-- MODAL DE AUTENTICACIÓN (LOGIN + REGISTRO) -->
+  <div class="modal-bg" id="modalAuth">
+    <div class="modal-box">
+      <button class="modal-x" onclick="UI.hideModal('modalAuth')">✕</button>
+      <div class="modal-tabs">
+        <button class="mtab active" data-tab="login" onclick="UI.switchTab('login')">Iniciar Sesión</button>
+        <button class="mtab" data-tab="register" onclick="UI.switchTab('register')">Registrarse</button>
+      </div>
+      
+      <!-- LOGIN -->
+      <div class="tab-pane" id="pane-login">
+        <div class="modal-icon">桜</div>
+        <form id="loginForm" novalidate>
+          <div class="f-group"><label>📧 Correo electrónico</label><input type="email" id="lEmail" placeholder="tu@correo.com" required/></div>
+          <div class="f-group"><label>🔑 Contraseña</label><input type="password" id="lPass" placeholder="••••••••" required/></div>
+          <div class="f-group check-row"><label class="check-label"><input type="checkbox" id="lIsAdmin"/><span>Acceso administrador</span></label></div>
+          <button type="submit" class="btn-primary btn-full">Entrar ⛩</button>
+          <p class="auth-err hidden" id="loginErr"></p>
+          <div class="demo-box"><strong>Cuentas demo:</strong><br>👤 user@sakura.mx / sakura123<br>⚙️ admin@sakura.mx / admin123</div>
+        </form>
+      </div>
+      
+      <!-- REGISTRO -->
+      <div class="tab-pane hidden" id="pane-register">
+        <div class="modal-icon">🌸</div>
+        <form id="registerForm" novalidate>
+          <div class="f-group"><label>👤 Nombre completo</label><input type="text" id="rName" placeholder="Tanaka Hanako" required/></div>
+          <div class="f-group"><label>📧 Correo</label><input type="email" id="rEmail" placeholder="tu@correo.com" required/></div>
+          <div class="f-group"><label>📱 Teléfono (opcional)</label><input type="tel" id="rPhone" placeholder="+52 55…"/></div>
+          <div class="f-group"><label>🔑 Contraseña (mín. 6 chars)</label><input type="password" id="rPass" placeholder="••••••••" required/></div>
+          <button type="submit" class="btn-primary btn-full">Crear Cuenta 🌸</button>
+          <p class="auth-err hidden" id="registerErr"></p>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL ADMIN -->
+  <div class="modal-bg" id="modalAdmin">
+    <div class="modal-box modal-xl">
+      <button class="modal-x" onclick="UI.hideModal('modalAdmin')">✕</button>
+      <div class="admin-head"><h2>⚙️ Panel Administrador</h2><span class="admin-badge">ADMIN</span></div>
+      <div class="admin-tabs">
+        <button class="atab active" onclick="Admin.showTab('reservas')">📅 Reservaciones</button>
+        <button class="atab" onclick="Admin.showTab('checklist')">✅ Check-in / Out</button>
+        <button class="atab" onclick="Admin.showTab('menu')">🍱 Gestión Menú</button>
+        <button class="atab" onclick="Admin.showTab('usuarios')">👥 Usuarios</button>
+      </div>
+      <div id="adminContent" class="admin-content"><p class="loading-msg">Cargando…</p></div>
+    </div>
+  </div>
+
+  <!-- MODAL DETALLE PLATILLO -->
+  <div class="modal-bg" id="modalItem">
+    <div class="modal-box"><button class="modal-x" onclick="UI.hideModal('modalItem')">✕</button><div id="itemDetail"></div></div>
+  </div>
+
+  <!-- FIREBASE SETUP -->
+  <div id="fbSetupOverlay" class="fb-overlay hidden">
+    <div class="fb-card">
+      <h2>🔥 Configurar Firebase</h2>
+      <textarea id="fbConfigInput" placeholder='{"apiKey":"...","authDomain":"...","projectId":"..."}'></textarea>
+      <button class="btn-primary btn-full" onclick="FirebaseSetup.save()">🚀 Conectar</button>
+      <p id="fbSetupMsg" class="fb-msg"></p>
+    </div>
+  </div>
+
+  <div id="toastBox" class="toast-box"></div>
+  <button class="fab" id="fabAdmin" onclick="Admin.open()">⚙️</button>
+
+  <!-- SCRIPTS -->
+  <script>
+    // ========== FUNCIONES UI ==========
+    window.UI = {
+      showModal: function(id) {
+        const modal = document.getElementById(id);
+        if (modal) {
+          modal.classList.add('active');
+          document.body.style.overflow = 'hidden';
+        }
+      },
+      hideModal: function(id) {
+        const modal = document.getElementById(id);
+        if (modal) {
+          modal.classList.remove('active');
+          document.body.style.overflow = '';
+        }
+      },
+      switchTab: function(tab) {
+        document.querySelectorAll('.mtab').forEach(btn => {
+          btn.classList.toggle('active', btn.dataset.tab === tab);
+        });
+        document.querySelectorAll('.tab-pane').forEach(pane => {
+          pane.classList.add('hidden');
+        });
+        const activePane = document.getElementById(`pane-${tab}`);
+        if (activePane) activePane.classList.remove('hidden');
+      },
+      toast: function(msg, type) {
+        const box = document.getElementById('toastBox');
+        if (!box) return;
+        const toast = document.createElement('div');
+        toast.className = `toast ${type || 'info'}`;
+        toast.innerHTML = msg;
+        box.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+      }
+    };
+
+    // ========== MENÚ HAMBURGUESA ==========
+    (function() {
+      const toggle = document.getElementById('navToggle');
+      const menu = document.getElementById('navLinks');
+      if (toggle && menu) {
+        toggle.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          menu.classList.toggle('open');
+          toggle.classList.toggle('open');
+        });
+        document.querySelectorAll('.nav-link').forEach(function(link) {
+          link.addEventListener('click', function() {
+            menu.classList.remove('open');
+            toggle.classList.remove('open');
+          });
+        });
+      }
+    })();
+
+    // ========== ACTUALIZAR UI DESPUÉS DE LOGIN ==========
+    function actualizarUIUsuario() {
+      let nombre = localStorage.getItem('sakura_user_name');
+      let isAdmin = localStorage.getItem('sakura_user_admin') === 'true';
+      
+      if (nombre) {
+        document.getElementById('btnNavLogin').classList.add('hidden');
+        document.getElementById('navUserMenu').classList.remove('hidden');
+        document.getElementById('navUsername').textContent = nombre;
+        if (isAdmin) document.getElementById('fabAdmin').classList.add('show');
+        const needLogin = document.getElementById('needLogin');
+        const reservaForm = document.getElementById('reservaForm');
+        if (needLogin) needLogin.classList.add('hidden');
+        if (reservaForm) reservaForm.classList.remove('hidden');
+      }
+    }
+    
+    document.addEventListener('DOMContentLoaded', actualizarUIUsuario);
+
+    // ========== LOGIN FORM ==========
+    const loginForm = document.getElementById('loginForm');
+    if (loginForm) {
+      loginForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const email = document.getElementById('lEmail')?.value;
+        const pass = document.getElementById('lPass')?.value;
+        const isAdminCheck = document.getElementById('lIsAdmin')?.checked;
+        
+        if ((email === 'user@sakura.mx' && pass === 'sakura123') || 
+            (email === 'admin@sakura.mx' && pass === 'admin123')) {
+          let nombre = email === 'admin@sakura.mx' ? 'Administrador' : email.split('@')[0];
+          let admin = email === 'admin@sakura.mx';
+          
+          localStorage.setItem('sakura_user_name', nombre);
+          localStorage.setItem('sakura_user_admin', admin ? 'true' : 'false');
+          actualizarUIUsuario();
+          UI.hideModal('modalAuth');
+          UI.toast(`¡Bienvenido, ${nombre}! 🌸`, 'ok');
+        } else {
+          UI.toast('Credenciales incorrectas', 'err');
+        }
+      });
+    }
+
+    // ========== REGISTER FORM ==========
+    const registerForm = document.getElementById('registerForm');
+    if (registerForm) {
+      registerForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const name = document.getElementById('rName')?.value;
+        const email = document.getElementById('rEmail')?.value;
+        const pass = document.getElementById('rPass')?.value;
+        
+        if (name && email && pass && pass.length >= 6) {
+          localStorage.setItem('sakura_user_name', name);
+          localStorage.setItem('sakura_user_admin', 'false');
+          actualizarUIUsuario();
+          UI.hideModal('modalAuth');
+          UI.toast(`¡Cuenta creada! Bienvenido, ${name} 🌸`, 'ok');
+          registerForm.reset();
+        } else {
+          UI.toast('Completa todos los campos (mín. 6 caracteres)', 'err');
+        }
+      });
+    }
+
+    // ========== BOTÓN CERRAR SESIÓN ==========
+    document.getElementById('btnNavLogout')?.addEventListener('click', function() {
+      localStorage.removeItem('sakura_user_name');
+      localStorage.removeItem('sakura_user_admin');
+      document.getElementById('btnNavLogin').classList.remove('hidden');
+      document.getElementById('navUserMenu').classList.add('hidden');
+      document.getElementById('fabAdmin').classList.remove('show');
+      const needLogin = document.getElementById('needLogin');
+      const reservaForm = document.getElementById('reservaForm');
+      if (needLogin) needLogin.classList.remove('hidden');
+      if (reservaForm) reservaForm.classList.add('hidden');
+      document.getElementById('misReservas').innerHTML = '<p class="empty-msg">Inicia sesión para ver tus reservaciones.</p>';
+      UI.toast('Sesión cerrada. ¡Hasta pronto! 👋', 'info');
+    });
+  </script>
+
+  <!-- LIBRERÍAS EXTERNAS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+  <!-- TUS SCRIPTS -->
+  <script src="js/data.js"></script>
+  <script src="js/firebase-init.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/menu.js"></script>
+  <script src="js/reservaciones.js"></script>
+  <script src="js/admin.js"></script>
+  <script src="js/ul.js"></script>
+  <script src="js/email.js"></script>
+  <script src="js/app.js"></script>
+
+
+  <script>
+  // FORZAR MENÚ HAMBURGUESA - SOLUCIÓN DEFINITIVA
+  (function() {
+    function iniciarMenu() {
+      const toggle = document.getElementById('navToggle');
+      const menu = document.getElementById('navLinks');
+      
+      if (!toggle || !menu) {
+        setTimeout(iniciarMenu, 100);
+        return;
+      }
+      
+      console.log('✅ Menú hamburguesa listo');
+      
+      // Eliminar estilos inline que puedan estar bloqueando
+      menu.style.left = '';
+      
+      toggle.onclick = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        if (menu.classList.contains('open')) {
+          menu.classList.remove('open');
+          toggle.classList.remove('open');
+        } else {
+          menu.classList.add('open');
+          toggle.classList.add('open');
+        }
+      };
+      
+      // Cerrar al hacer clic en enlaces
+      document.querySelectorAll('.nav-link').forEach(function(link) {
+        link.onclick = function() {
+          menu.classList.remove('open');
+          toggle.classList.remove('open');
+        };
+      });
+    }
+    
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', iniciarMenu);
+    } else {
+      iniciarMenu();
+    }
+  })();
+</script>
+
+
+<script>
+  // FORZAR BOTÓN ENTRAR - SOLUCIÓN DIRECTA
+  (function() {
+    const btnEntrar = document.getElementById('btnNavLogin');
+    if (btnEntrar) {
+      btnEntrar.onclick = function(e) {
+        e.preventDefault();
+        if (typeof UI !== 'undefined' && UI.showModal) {
+          UI.showModal('modalAuth');
+          if (UI.switchTab) UI.switchTab('login');
+        } else {
+          // Fallback directo
+          const modal = document.getElementById('modalAuth');
+          if (modal) modal.classList.add('active');
+        }
+      };
+      console.log('✅ Botón Entrar conectado');
+    }
+  })();
+</script>
+
+<script>
+  // ========== REGISTRO Y LOGIN REAL CON FIREBASE ==========
+  (function() {
+    // Esperar a que Firebase esté listo
+    const esperarFirebase = setInterval(() => {
+      if (typeof window.sakuraAuth !== 'undefined' && window.sakuraAuth) {
+        clearInterval(esperarFirebase);
+        console.log('✅ Firebase listo para registro/login');
+        
+        // === REGISTRO REAL ===
+        const registerForm = document.getElementById('registerForm');
+        if (registerForm) {
+          // Eliminar event listener anterior si existe
+          const nuevoRegistro = registerForm.cloneNode(true);
+          registerForm.parentNode.replaceChild(nuevoRegistro, registerForm);
+          
+          nuevoRegistro.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const name = document.getElementById('rName')?.value;
+            const email = document.getElementById('rEmail')?.value;
+            const phone = document.getElementById('rPhone')?.value;
+            const password = document.getElementById('rPass')?.value;
+            
+            if (!name || !email || !password) {
+              alert('Completa todos los campos obligatorios');
+              return;
+            }
+            
+            if (password.length < 6) {
+              alert('La contraseña debe tener al menos 6 caracteres');
+              return;
+            }
+            
+            const btn = this.querySelector('button[type="submit"]');
+            btn.disabled = true;
+            btn.textContent = '⏳ Creando cuenta...';
+            
+            try {
+              const { createUserWithEmailAndPassword, updateProfile } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js');
+              const { setDoc, doc, serverTimestamp } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js');
+              
+              // Crear usuario en Authentication
+              const cred = await createUserWithEmailAndPassword(window.sakuraAuth, email, password);
+              await updateProfile(cred.user, { displayName: name });
+              
+              // Guardar en Firestore
+              await setDoc(doc(window.sakuraDB, 'usuarios', cred.user.uid), {
+                uid: cred.user.uid,
+                nombre: name,
+                email: email,
+                telefono: phone || '',
+                rol: 'user',
+                createdAt: serverTimestamp()
+              });
+              
+              alert('✅ Cuenta creada exitosamente. Ahora inicia sesión.');
+              
+              // Limpiar formulario
+              document.getElementById('rName').value = '';
+              document.getElementById('rEmail').value = '';
+              document.getElementById('rPhone').value = '';
+              document.getElementById('rPass').value = '';
+              
+              // Cambiar a pestaña login
+              if (UI && UI.switchTab) UI.switchTab('login');
+              
+            } catch(error) {
+              console.error(error);
+              let msg = error.message;
+              if (error.code === 'auth/email-already-in-use') msg = 'Este correo ya está registrado';
+              if (error.code === 'auth/weak-password') msg = 'La contraseña es muy débil';
+              alert('❌ Error: ' + msg);
+            } finally {
+              btn.disabled = false;
+              btn.textContent = 'Crear Cuenta 🌸';
+            }
+          });
+        }
+        
+        // === LOGIN REAL ===
+        const loginForm = document.getElementById('loginForm');
+        if (loginForm) {
+          // Eliminar event listener anterior
+          const nuevoLogin = loginForm.cloneNode(true);
+          loginForm.parentNode.replaceChild(nuevoLogin, loginForm);
+          
+          nuevoLogin.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const email = document.getElementById('lEmail')?.value;
+            const password = document.getElementById('lPass')?.value;
+            const isAdminCheck = document.getElementById('lIsAdmin')?.checked;
+            
+            if (!email || !password) {
+              alert('Ingresa tu correo y contraseña');
+              return;
+            }
+            
+            const btn = this.querySelector('button[type="submit"]');
+            btn.disabled = true;
+            btn.textContent = '⏳ Iniciando...';
+            
+            try {
+              const { signInWithEmailAndPassword, signOut } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js');
+              const { getDoc, doc } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js');
+              
+              const cred = await signInWithEmailAndPassword(window.sakuraAuth, email, password);
+              
+              // Obtener perfil de Firestore
+              const userDoc = await getDoc(doc(window.sakuraDB, 'usuarios', cred.user.uid));
+              const userData = userDoc.data();
+              
+              // Verificar admin si el checkbox está marcado
+              if (isAdminCheck && userData?.rol !== 'admin') {
+                await signOut(window.sakuraAuth);
+                alert('❌ No tienes permisos de administrador');
+                return;
+              }
+              
+              // Guardar en localStorage para la UI
+              localStorage.setItem('sakura_user_name', userData?.nombre || email.split('@')[0]);
+              localStorage.setItem('sakura_user_admin', userData?.rol === 'admin');
+              
+              // Actualizar UI manualmente
+              const btnLogin = document.getElementById('btnNavLogin');
+              const userMenu = document.getElementById('navUserMenu');
+              const usernameSpan = document.getElementById('navUsername');
+              const fabAdmin = document.getElementById('fabAdmin');
+              const needLogin = document.getElementById('needLogin');
+              const reservaForm = document.getElementById('reservaForm');
+              
+              if (btnLogin) btnLogin.classList.add('hidden');
+              if (userMenu) userMenu.classList.remove('hidden');
+              if (usernameSpan) usernameSpan.textContent = (userData?.nombre || email.split('@')[0]).split(' ')[0];
+              if (fabAdmin && userData?.rol === 'admin') fabAdmin.classList.add('show');
+              if (needLogin) needLogin.classList.add('hidden');
+              if (reservaForm) reservaForm.classList.remove('hidden');
+              
+              // Cerrar modal
+              if (UI && UI.hideModal) UI.hideModal('modalAuth');
+              
+              // Recargar reservas
+              if (Reservaciones && Reservaciones.loadMisReservas) {
+                Reservaciones.loadMisReservas(cred.user.uid);
+              }
+              
+              alert('✅ Bienvenido, ' + (userData?.nombre || email));
+              
+            } catch(error) {
+              console.error(error);
+              alert('❌ Error: Correo o contraseña incorrectos');
+            } finally {
+              btn.disabled = false;
+              btn.textContent = 'Entrar ⛩';
+            }
+          });
+        }
+      }
+    }, 500);
+  })();
+</script>
+
+<script>
+  // ========== ENVÍO DE TICKET - VERSIÓN CORREGIDA ==========
+  (function() {
+    const interval = setInterval(() => {
+      if (typeof Reservaciones !== 'undefined' && window.sakuraDB && typeof emailjs !== 'undefined') {
+        clearInterval(interval);
+        console.log('✅ Sistema de tickets activado');
+        
+        emailjs.init('OeCSnjYMl3_EiMBct');
+        
+        Reservaciones.adminConfirmar = async function(id) {
+          if (!confirm('¿Confirmar esta reservación? Se enviará un ticket al cliente.')) return;
+          
+          const btn = event?.target;
+          if (btn) {
+            btn.disabled = true;
+            btn.textContent = '⏳ Enviando...';
+          }
+          
+          try {
+            const { doc, updateDoc, getDoc } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js');
+            
+            const reservaRef = doc(window.sakuraDB, 'reservaciones', id);
+            const reservaSnap = await getDoc(reservaRef);
+            const reserva = { id: reservaSnap.id, ...reservaSnap.data() };
+            
+            await updateDoc(reservaRef, { estado: 'confirmada' });
+            UI.toast('✅ Reservación confirmada', 'ok');
+            
+            const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+            const [y, m, d] = reserva.fecha.split('-');
+            const fechaFormateada = `${parseInt(d)} de ${meses[parseInt(m)-1]} de ${y}`;
+            
+            // Parámetros - Asegurar que to_email existe
+            const templateParams = {
+              to_email: reserva.email,      // 👈 Este es el campo que EmailJS espera
+              to_name: reserva.nombre,
+              reservation_date: fechaFormateada,
+              reservation_time: `${reserva.horaEntrada} - ${reserva.horaSalida}`,
+              reservation_persons: reserva.personas.toString(),
+              reservation_area: reserva.area === 'fumar' ? 'Fumar 🚬' : 'No Fumar 🚭',
+              reservation_notes: reserva.notas || 'Ninguna',
+              reservation_id: reserva.id.substring(0, 8),
+              year: new Date().getFullYear().toString()
+            };
+            
+            console.log('📧 Enviando a:', reserva.email);
+            console.log('📧 Parámetros completos:', templateParams);
+            
+            // Enviar email
+            const response = await emailjs.send('service_asd2cip', 'template_azca5v4', templateParams);
+            
+            console.log('✅ Email enviado con éxito:', response);
+            UI.toast(`📧 Ticket enviado a ${reserva.email}`, 'ok');
+            
+          } catch(e) {
+            console.error('❌ Error detallado:', e);
+            UI.toast('Error: ' + (e.text || e.message || 'No se pudo enviar'), 'err');
+          } finally {
+            if (btn) {
+              btn.disabled = false;
+              btn.textContent = '✅ Aceptar';
+            }
+          }
+        };
+      }
+    }, 500);
+  })();
+</script>
+  
+</body>
+</html>
