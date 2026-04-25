@@ -13,15 +13,19 @@ let _auth = null;
 let _firebaseApp = null;
 let _firebaseReady = false;
 
+// Configuración fija de Firebase (para que no pida conectar nunca)
+const FIXED_FIREBASE_CONFIG = {
+  apiKey: "AIzaSyDKQO1hwMnyfVKMLPbGvzPYyigNfno1WWY",
+  authDomain: "sakurarestaurant1-c90a5.firebaseapp.com",
+  projectId: "sakurarestaurant1-c90a5",
+  storageBucket: "sakurarestaurant1-c90a5.firebasestorage.app",
+  messagingSenderId: "864876802258",
+  appId: "1:864876802258:web:2c767936c45e6c452afd0b"
+};
+
 async function initFirebase() {
-  const savedConfig = loadConfig();
-  if (!savedConfig) {
-    console.log('%c🔥 SAKURA — Firebase Setup', 'font-size:16px;color:#d9556b;font-weight:bold');
-    console.log('Ejecuta: FirebaseSetup.quickConnect(JSON.stringify({apiKey:"...",authDomain:"...",projectId:"..."}))');
-    document.getElementById('fbSetupOverlay')?.classList.remove('hidden');
-    return false;
-  }
-  return await connectFirebase(savedConfig);
+  // Usar configuración fija, no pedir wizard
+  return await connectFirebase(FIXED_FIREBASE_CONFIG);
 }
 
 async function connectFirebase(config) {
