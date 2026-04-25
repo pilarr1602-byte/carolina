@@ -1,54 +1,60 @@
+import { FirebaseSetup } from './firebase-init.js';
+import Auth from './auth.js';
+
 document.addEventListener('DOMContentLoaded', async () => {
   console.log('🌸 Iniciando Sakura Restaurante...');
   
-  // Inicializar UI
-  if (UI) {
-    UI.initNavbar();
-    UI.initPetals();
-    UI.initKeyboard();
-    UI.initSmoothScroll();
+  if (typeof UI !== 'undefined') {
+    if (UI.initNavbar) UI.initNavbar();
+    if (UI.initPetals) UI.initPetals();
+    if (UI.initKeyboard) UI.initKeyboard();
+    if (UI.initSmoothScroll) UI.initSmoothScroll();
   }
   
-  // Inicializar menú
-  if (Menu && Menu.init) {
-    await Menu.init();
-    console.log('✅ Menú inicializado');
-  }
+  if (typeof Menu !== 'undefined' && Menu.init) await Menu.init();
   
-  // Firebase
-  let fbOk = false;
-  if (FirebaseSetup && FirebaseSetup.init) {
-    fbOk = await FirebaseSetup.init();
-  }
-  
-  if (fbOk && Auth) {
+  const fbOk = await FirebaseSetup.init();
+  if (fbOk) {
     Auth.init();
-    if (Reservaciones) Reservaciones.init();
-  } else if (Reservaciones) {
+    if (typeof Reservaciones !== 'undefined') Reservaciones.init();
+  } else if (typeof Reservaciones !== 'undefined') {
     Reservaciones.init();
   }
   
-  // Login
   const loginForm = document.getElementById('loginForm');
-  if (loginForm && Auth) {
+  if (loginForm) {
     loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const email = document.getElementById('lEmail')?.value;
+      const email = document.getElementById('lEmail')?.value.trim();
       const pass = document.getElementById('lPass')?.value;
-      if (fbOk) await Auth.login(email, pass, false);
+      const isAdmin = document.getElementById('lIsAdmin')?.checked;
+      await Auth.login(email, pass, isAdmin);
     });
   }
   
-  // Botones
-  const btnLogin = document.getElementById('btnNavLogin');
-  if (btnLogin) {
-    btnLogin.addEventListener('click', () => UI.showModal('modalAuth'));
+  const registerForm = document.getElementById('registerForm');
+  if (registerForm) {
+    registerForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('rName')?.value.trim();
+      const email = document.getElementById('rEmail')?.value.trim();
+      const phone = document.getElementById('rPhone')?.value.trim();
+      const pass = document.getElementById('rPass')?.value;
+      await Auth.register(name, email, phone, pass);
+    });
+  }
+  
+  const btnNavLogout = document.getElementById('btnNavLogout');
+  if (btnNavLogout) {
+    btnNavLogout.addEventListener('click', async () => {
+      await Auth.logout();
+    });
   }
   
   const fabAdmin = document.getElementById('fabAdmin');
-  if (fabAdmin && Admin) {
-    fabAdmin.addEventListener('click', () => Admin.open());
+  if (fabAdmin && typeof Admin !== 'undefined') {
+    fabAdmin.addEventListener('click', () => { Admin.open(); });
   }
   
-  console.log('✅ App lista!');
+  console.log('%c✅ App lista!', 'color:#4d7a38;font-weight:bold');
 });

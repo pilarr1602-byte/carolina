@@ -61,7 +61,6 @@
   </header>
 
   <main id="main-content">
-    <!-- CATEGORÍAS -->
     <div class="cats-strip">
       <div class="container">
         <div class="cats-row">
@@ -75,7 +74,6 @@
       </div>
     </div>
 
-    <!-- MENÚ -->
     <section id="menu" class="s-menu">
       <div class="container">
         <header class="s-header">
@@ -85,13 +83,12 @@
         </header>
         <div class="menu-spinner" id="menuSpinner">
           <div class="spinner-petal">🌸</div>
-          <p>Cargando desde Firebase…</p>
+          <p>Cargando menú...</p>
         </div>
         <div class="menu-grid" id="menuGrid"></div>
       </div>
     </section>
 
-    <!-- ASIDE ESPECIALES -->
     <aside class="s-aside">
       <div class="container">
         <div class="aside-inner">
@@ -110,7 +107,6 @@
       </div>
     </aside>
 
-    <!-- RESERVACIONES -->
     <section id="reservaciones" class="s-reservas">
       <div class="container">
         <header class="s-header">
@@ -123,7 +119,7 @@
             <div class="need-login" id="needLogin">
               <span class="nl-icon">🔐</span>
               <p>Inicia sesión para poder reservar tu mesa</p>
-              <button class="btn-primary" onclick="UI.showModal('modalAuth')">Iniciar Sesión</button>
+              <button class="btn-primary" id="openModalBtn">Iniciar Sesión</button>
             </div>
             <form class="reserva-form hidden" id="reservaForm" novalidate>
               <h3>Nueva Reservación</h3>
@@ -145,7 +141,6 @@
       </div>
     </section>
 
-    <!-- NOSOTROS -->
     <section id="nosotros" class="s-nosotros">
       <div class="container">
         <div class="nosotros-grid">
@@ -162,7 +157,6 @@
     </section>
   </main>
 
-  <!-- FOOTER -->
   <footer id="contacto" class="footer">
     <div class="footer-topline"></div>
     <div class="container">
@@ -176,16 +170,14 @@
     </div>
   </footer>
 
-  <!-- MODAL DE AUTENTICACIÓN (LOGIN + REGISTRO) -->
+  <!-- MODALES -->
   <div class="modal-bg" id="modalAuth">
     <div class="modal-box">
-      <button class="modal-x" onclick="UI.hideModal('modalAuth')">✕</button>
+      <button class="modal-x" id="closeModalBtn">✕</button>
       <div class="modal-tabs">
-        <button class="mtab active" data-tab="login" onclick="UI.switchTab('login')">Iniciar Sesión</button>
-        <button class="mtab" data-tab="register" onclick="UI.switchTab('register')">Registrarse</button>
+        <button class="mtab active" data-tab="login" id="tabLoginBtn">Iniciar Sesión</button>
+        <button class="mtab" data-tab="register" id="tabRegisterBtn">Registrarse</button>
       </div>
-      
-      <!-- LOGIN -->
       <div class="tab-pane" id="pane-login">
         <div class="modal-icon">桜</div>
         <form id="loginForm" novalidate>
@@ -197,8 +189,6 @@
           <div class="demo-box"><strong>Cuentas demo:</strong><br>👤 user@sakura.mx / sakura123<br>⚙️ admin@sakura.mx / admin123</div>
         </form>
       </div>
-      
-      <!-- REGISTRO -->
       <div class="tab-pane hidden" id="pane-register">
         <div class="modal-icon">🌸</div>
         <form id="registerForm" novalidate>
@@ -213,7 +203,6 @@
     </div>
   </div>
 
-  <!-- MODAL ADMIN -->
   <div class="modal-bg" id="modalAdmin">
     <div class="modal-box modal-xl">
       <button class="modal-x" onclick="UI.hideModal('modalAdmin')">✕</button>
@@ -228,12 +217,10 @@
     </div>
   </div>
 
-  <!-- MODAL DETALLE PLATILLO -->
   <div class="modal-bg" id="modalItem">
     <div class="modal-box"><button class="modal-x" onclick="UI.hideModal('modalItem')">✕</button><div id="itemDetail"></div></div>
   </div>
 
-  <!-- FIREBASE SETUP -->
   <div id="fbSetupOverlay" class="fb-overlay hidden">
     <div class="fb-card">
       <h2>🔥 Configurar Firebase</h2>
@@ -247,461 +234,123 @@
   <button class="fab" id="fabAdmin" onclick="Admin.open()">⚙️</button>
 
   <!-- SCRIPTS -->
-  <script>
-    // ========== FUNCIONES UI ==========
-    window.UI = {
-      showModal: function(id) {
-        const modal = document.getElementById(id);
-        if (modal) {
-          modal.classList.add('active');
-          document.body.style.overflow = 'hidden';
-        }
-      },
-      hideModal: function(id) {
-        const modal = document.getElementById(id);
-        if (modal) {
-          modal.classList.remove('active');
-          document.body.style.overflow = '';
-        }
-      },
-      switchTab: function(tab) {
-        document.querySelectorAll('.mtab').forEach(btn => {
-          btn.classList.toggle('active', btn.dataset.tab === tab);
-        });
-        document.querySelectorAll('.tab-pane').forEach(pane => {
-          pane.classList.add('hidden');
-        });
-        const activePane = document.getElementById(`pane-${tab}`);
-        if (activePane) activePane.classList.remove('hidden');
-      },
-      toast: function(msg, type) {
-        const box = document.getElementById('toastBox');
-        if (!box) return;
-        const toast = document.createElement('div');
-        toast.className = `toast ${type || 'info'}`;
-        toast.innerHTML = msg;
-        box.appendChild(toast);
-        setTimeout(() => toast.remove(), 3000);
-      }
-    };
-
-    // ========== MENÚ HAMBURGUESA ==========
-    (function() {
-      const toggle = document.getElementById('navToggle');
-      const menu = document.getElementById('navLinks');
-      if (toggle && menu) {
-        toggle.addEventListener('click', function(e) {
-          e.preventDefault();
-          e.stopPropagation();
-          menu.classList.toggle('open');
-          toggle.classList.toggle('open');
-        });
-        document.querySelectorAll('.nav-link').forEach(function(link) {
-          link.addEventListener('click', function() {
-            menu.classList.remove('open');
-            toggle.classList.remove('open');
-          });
-        });
-      }
-    })();
-
-    // ========== ACTUALIZAR UI DESPUÉS DE LOGIN ==========
-    function actualizarUIUsuario() {
-      let nombre = localStorage.getItem('sakura_user_name');
-      let isAdmin = localStorage.getItem('sakura_user_admin') === 'true';
-      
-      if (nombre) {
-        document.getElementById('btnNavLogin').classList.add('hidden');
-        document.getElementById('navUserMenu').classList.remove('hidden');
-        document.getElementById('navUsername').textContent = nombre;
-        if (isAdmin) document.getElementById('fabAdmin').classList.add('show');
-        const needLogin = document.getElementById('needLogin');
-        const reservaForm = document.getElementById('reservaForm');
-        if (needLogin) needLogin.classList.add('hidden');
-        if (reservaForm) reservaForm.classList.remove('hidden');
-      }
-    }
-    
-    document.addEventListener('DOMContentLoaded', actualizarUIUsuario);
-
-    // ========== LOGIN FORM ==========
-    const loginForm = document.getElementById('loginForm');
-    if (loginForm) {
-      loginForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const email = document.getElementById('lEmail')?.value;
-        const pass = document.getElementById('lPass')?.value;
-        const isAdminCheck = document.getElementById('lIsAdmin')?.checked;
-        
-        if ((email === 'user@sakura.mx' && pass === 'sakura123') || 
-            (email === 'admin@sakura.mx' && pass === 'admin123')) {
-          let nombre = email === 'admin@sakura.mx' ? 'Administrador' : email.split('@')[0];
-          let admin = email === 'admin@sakura.mx';
-          
-          localStorage.setItem('sakura_user_name', nombre);
-          localStorage.setItem('sakura_user_admin', admin ? 'true' : 'false');
-          actualizarUIUsuario();
-          UI.hideModal('modalAuth');
-          UI.toast(`¡Bienvenido, ${nombre}! 🌸`, 'ok');
-        } else {
-          UI.toast('Credenciales incorrectas', 'err');
-        }
-      });
-    }
-
-    // ========== REGISTER FORM ==========
-    const registerForm = document.getElementById('registerForm');
-    if (registerForm) {
-      registerForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const name = document.getElementById('rName')?.value;
-        const email = document.getElementById('rEmail')?.value;
-        const pass = document.getElementById('rPass')?.value;
-        
-        if (name && email && pass && pass.length >= 6) {
-          localStorage.setItem('sakura_user_name', name);
-          localStorage.setItem('sakura_user_admin', 'false');
-          actualizarUIUsuario();
-          UI.hideModal('modalAuth');
-          UI.toast(`¡Cuenta creada! Bienvenido, ${name} 🌸`, 'ok');
-          registerForm.reset();
-        } else {
-          UI.toast('Completa todos los campos (mín. 6 caracteres)', 'err');
-        }
-      });
-    }
-
-    // ========== BOTÓN CERRAR SESIÓN ==========
-    document.getElementById('btnNavLogout')?.addEventListener('click', function() {
-      localStorage.removeItem('sakura_user_name');
-      localStorage.removeItem('sakura_user_admin');
-      document.getElementById('btnNavLogin').classList.remove('hidden');
-      document.getElementById('navUserMenu').classList.add('hidden');
-      document.getElementById('fabAdmin').classList.remove('show');
-      const needLogin = document.getElementById('needLogin');
-      const reservaForm = document.getElementById('reservaForm');
-      if (needLogin) needLogin.classList.remove('hidden');
-      if (reservaForm) reservaForm.classList.add('hidden');
-      document.getElementById('misReservas').innerHTML = '<p class="empty-msg">Inicia sesión para ver tus reservaciones.</p>';
-      UI.toast('Sesión cerrada. ¡Hasta pronto! 👋', 'info');
-    });
-  </script>
-
-  <!-- LIBRERÍAS EXTERNAS -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-
-  <!-- TUS SCRIPTS -->
+  
   <script src="js/data.js"></script>
-  <script src="js/firebase-init.js"></script>
-  <script src="js/auth.js"></script>
   <script src="js/menu.js"></script>
   <script src="js/reservaciones.js"></script>
   <script src="js/admin.js"></script>
   <script src="js/ul.js"></script>
   <script src="js/email.js"></script>
-  <script src="js/app.js"></script>
+  
+  <script type="module" src="js/firebase-init.js"></script>
+  <script type="module" src="js/auth.js"></script>
+  <script type="module" src="js/app.js"></script>
 
+  <!-- SCRIPT DE RESPALDO PARA MODALES -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Botón Entrar
+      const btnEntrar = document.getElementById('btnNavLogin');
+      const openModalBtn = document.getElementById('openModalBtn');
+      const modalAuth = document.getElementById('modalAuth');
+      const closeModalBtn = document.getElementById('closeModalBtn');
+      const tabLoginBtn = document.getElementById('tabLoginBtn');
+      const tabRegisterBtn = document.getElementById('tabRegisterBtn');
+      const paneLogin = document.getElementById('pane-login');
+      const paneRegister = document.getElementById('pane-register');
+
+      // Abrir modal
+      function abrirModal() {
+        if (modalAuth) modalAuth.classList.add('active');
+      }
+
+      if (btnEntrar) btnEntrar.addEventListener('click', abrirModal);
+      if (openModalBtn) openModalBtn.addEventListener('click', abrirModal);
+
+      // Cerrar modal
+      if (closeModalBtn) {
+        closeModalBtn.addEventListener('click', function() {
+          if (modalAuth) modalAuth.classList.remove('active');
+        });
+      }
+
+      // Cambiar pestañas
+      if (tabLoginBtn && tabRegisterBtn) {
+        tabLoginBtn.addEventListener('click', function() {
+          tabLoginBtn.classList.add('active');
+          tabRegisterBtn.classList.remove('active');
+          if (paneLogin) paneLogin.classList.remove('hidden');
+          if (paneRegister) paneRegister.classList.add('hidden');
+        });
+        tabRegisterBtn.addEventListener('click', function() {
+          tabRegisterBtn.classList.add('active');
+          tabLoginBtn.classList.remove('active');
+          if (paneRegister) paneRegister.classList.remove('hidden');
+          if (paneLogin) paneLogin.classList.add('hidden');
+        });
+      }
+
+      // Cerrar modal al hacer clic fuera
+      if (modalAuth) {
+        modalAuth.addEventListener('click', function(e) {
+          if (e.target === modalAuth) {
+            modalAuth.classList.remove('active');
+          }
+        });
+      }
+
+      console.log('✅ Modales y botones conectados');
+    });
+  </script>
 
   <script>
-  // FORZAR MENÚ HAMBURGUESA - SOLUCIÓN DEFINITIVA
+  // ========== SISTEMA DE RESERVACIONES - FUNCIONAL ==========
   (function() {
-    function iniciarMenu() {
-      const toggle = document.getElementById('navToggle');
-      const menu = document.getElementById('navLinks');
-      
-      if (!toggle || !menu) {
-        setTimeout(iniciarMenu, 100);
-        return;
-      }
-      
-      console.log('✅ Menú hamburguesa listo');
-      
-      // Eliminar estilos inline que puedan estar bloqueando
-      menu.style.left = '';
-      
-      toggle.onclick = function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        
-        if (menu.classList.contains('open')) {
-          menu.classList.remove('open');
-          toggle.classList.remove('open');
-        } else {
-          menu.classList.add('open');
-          toggle.classList.add('open');
+    // Esperar a que Firebase y Auth estén listos
+    function esperarYcargar() {
+      if (typeof Auth !== 'undefined' && Auth.isLoggedIn() && typeof Reservaciones !== 'undefined') {
+        console.log('✅ Usuario logueado, cargando reservaciones...');
+        const user = Auth.getUser();
+        if (user) {
+          Reservaciones.loadMisReservas(user.uid);
         }
-      };
-      
-      // Cerrar al hacer clic en enlaces
-      document.querySelectorAll('.nav-link').forEach(function(link) {
-        link.onclick = function() {
-          menu.classList.remove('open');
-          toggle.classList.remove('open');
-        };
-      });
+      } else if (typeof Auth !== 'undefined' && !Auth.isLoggedIn()) {
+        console.log('👤 Usuario no logueado');
+        const contenedor = document.getElementById('misReservas');
+        if (contenedor) {
+          contenedor.innerHTML = '<p class="empty-msg">Inicia sesión para ver tus reservaciones.</p>';
+        }
+      } else {
+        console.log('⏳ Esperando autenticación...');
+        setTimeout(esperarYcargar, 500);
+      }
     }
     
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', iniciarMenu);
-    } else {
-      iniciarMenu();
+    // Ejecutar al cargar la página
+    document.addEventListener('DOMContentLoaded', esperarYcargar);
+    
+    // También ejecutar cuando se abre el modal de login (por si inician sesión)
+    const observer = new MutationObserver(function() {
+      const btnLogin = document.getElementById('btnNavLogin');
+      const userMenu = document.getElementById('navUserMenu');
+      
+      if (btnLogin && btnLogin.classList.contains('hidden') && userMenu && !userMenu.classList.contains('hidden')) {
+        console.log('🔄 Sesión detectada (cambio en UI), cargando reservaciones...');
+        setTimeout(() => {
+          if (Auth && Auth.getUser()) {
+            Reservaciones.loadMisReservas(Auth.getUser().uid);
+          }
+        }, 500);
+      }
+    });
+    
+    const btnNavLogin = document.getElementById('btnNavLogin');
+    if (btnNavLogin) {
+      observer.observe(btnNavLogin, { attributes: true, attributeFilter: ['class'] });
     }
   })();
 </script>
-
-
-<script>
-  // FORZAR BOTÓN ENTRAR - SOLUCIÓN DIRECTA
-  (function() {
-    const btnEntrar = document.getElementById('btnNavLogin');
-    if (btnEntrar) {
-      btnEntrar.onclick = function(e) {
-        e.preventDefault();
-        if (typeof UI !== 'undefined' && UI.showModal) {
-          UI.showModal('modalAuth');
-          if (UI.switchTab) UI.switchTab('login');
-        } else {
-          // Fallback directo
-          const modal = document.getElementById('modalAuth');
-          if (modal) modal.classList.add('active');
-        }
-      };
-      console.log('✅ Botón Entrar conectado');
-    }
-  })();
-</script>
-
-<script>
-  // ========== REGISTRO Y LOGIN REAL CON FIREBASE ==========
-  (function() {
-    // Esperar a que Firebase esté listo
-    const esperarFirebase = setInterval(() => {
-      if (typeof window.sakuraAuth !== 'undefined' && window.sakuraAuth) {
-        clearInterval(esperarFirebase);
-        console.log('✅ Firebase listo para registro/login');
-        
-        // === REGISTRO REAL ===
-        const registerForm = document.getElementById('registerForm');
-        if (registerForm) {
-          // Eliminar event listener anterior si existe
-          const nuevoRegistro = registerForm.cloneNode(true);
-          registerForm.parentNode.replaceChild(nuevoRegistro, registerForm);
-          
-          nuevoRegistro.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const name = document.getElementById('rName')?.value;
-            const email = document.getElementById('rEmail')?.value;
-            const phone = document.getElementById('rPhone')?.value;
-            const password = document.getElementById('rPass')?.value;
-            
-            if (!name || !email || !password) {
-              alert('Completa todos los campos obligatorios');
-              return;
-            }
-            
-            if (password.length < 6) {
-              alert('La contraseña debe tener al menos 6 caracteres');
-              return;
-            }
-            
-            const btn = this.querySelector('button[type="submit"]');
-            btn.disabled = true;
-            btn.textContent = '⏳ Creando cuenta...';
-            
-            try {
-              const { createUserWithEmailAndPassword, updateProfile } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js');
-              const { setDoc, doc, serverTimestamp } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js');
-              
-              // Crear usuario en Authentication
-              const cred = await createUserWithEmailAndPassword(window.sakuraAuth, email, password);
-              await updateProfile(cred.user, { displayName: name });
-              
-              // Guardar en Firestore
-              await setDoc(doc(window.sakuraDB, 'usuarios', cred.user.uid), {
-                uid: cred.user.uid,
-                nombre: name,
-                email: email,
-                telefono: phone || '',
-                rol: 'user',
-                createdAt: serverTimestamp()
-              });
-              
-              alert('✅ Cuenta creada exitosamente. Ahora inicia sesión.');
-              
-              // Limpiar formulario
-              document.getElementById('rName').value = '';
-              document.getElementById('rEmail').value = '';
-              document.getElementById('rPhone').value = '';
-              document.getElementById('rPass').value = '';
-              
-              // Cambiar a pestaña login
-              if (UI && UI.switchTab) UI.switchTab('login');
-              
-            } catch(error) {
-              console.error(error);
-              let msg = error.message;
-              if (error.code === 'auth/email-already-in-use') msg = 'Este correo ya está registrado';
-              if (error.code === 'auth/weak-password') msg = 'La contraseña es muy débil';
-              alert('❌ Error: ' + msg);
-            } finally {
-              btn.disabled = false;
-              btn.textContent = 'Crear Cuenta 🌸';
-            }
-          });
-        }
-        
-        // === LOGIN REAL ===
-        const loginForm = document.getElementById('loginForm');
-        if (loginForm) {
-          // Eliminar event listener anterior
-          const nuevoLogin = loginForm.cloneNode(true);
-          loginForm.parentNode.replaceChild(nuevoLogin, loginForm);
-          
-          nuevoLogin.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const email = document.getElementById('lEmail')?.value;
-            const password = document.getElementById('lPass')?.value;
-            const isAdminCheck = document.getElementById('lIsAdmin')?.checked;
-            
-            if (!email || !password) {
-              alert('Ingresa tu correo y contraseña');
-              return;
-            }
-            
-            const btn = this.querySelector('button[type="submit"]');
-            btn.disabled = true;
-            btn.textContent = '⏳ Iniciando...';
-            
-            try {
-              const { signInWithEmailAndPassword, signOut } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js');
-              const { getDoc, doc } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js');
-              
-              const cred = await signInWithEmailAndPassword(window.sakuraAuth, email, password);
-              
-              // Obtener perfil de Firestore
-              const userDoc = await getDoc(doc(window.sakuraDB, 'usuarios', cred.user.uid));
-              const userData = userDoc.data();
-              
-              // Verificar admin si el checkbox está marcado
-              if (isAdminCheck && userData?.rol !== 'admin') {
-                await signOut(window.sakuraAuth);
-                alert('❌ No tienes permisos de administrador');
-                return;
-              }
-              
-              // Guardar en localStorage para la UI
-              localStorage.setItem('sakura_user_name', userData?.nombre || email.split('@')[0]);
-              localStorage.setItem('sakura_user_admin', userData?.rol === 'admin');
-              
-              // Actualizar UI manualmente
-              const btnLogin = document.getElementById('btnNavLogin');
-              const userMenu = document.getElementById('navUserMenu');
-              const usernameSpan = document.getElementById('navUsername');
-              const fabAdmin = document.getElementById('fabAdmin');
-              const needLogin = document.getElementById('needLogin');
-              const reservaForm = document.getElementById('reservaForm');
-              
-              if (btnLogin) btnLogin.classList.add('hidden');
-              if (userMenu) userMenu.classList.remove('hidden');
-              if (usernameSpan) usernameSpan.textContent = (userData?.nombre || email.split('@')[0]).split(' ')[0];
-              if (fabAdmin && userData?.rol === 'admin') fabAdmin.classList.add('show');
-              if (needLogin) needLogin.classList.add('hidden');
-              if (reservaForm) reservaForm.classList.remove('hidden');
-              
-              // Cerrar modal
-              if (UI && UI.hideModal) UI.hideModal('modalAuth');
-              
-              // Recargar reservas
-              if (Reservaciones && Reservaciones.loadMisReservas) {
-                Reservaciones.loadMisReservas(cred.user.uid);
-              }
-              
-              alert('✅ Bienvenido, ' + (userData?.nombre || email));
-              
-            } catch(error) {
-              console.error(error);
-              alert('❌ Error: Correo o contraseña incorrectos');
-            } finally {
-              btn.disabled = false;
-              btn.textContent = 'Entrar ⛩';
-            }
-          });
-        }
-      }
-    }, 500);
-  })();
-</script>
-
-<script>
-  // ========== ENVÍO DE TICKET - VERSIÓN CORREGIDA ==========
-  (function() {
-    const interval = setInterval(() => {
-      if (typeof Reservaciones !== 'undefined' && window.sakuraDB && typeof emailjs !== 'undefined') {
-        clearInterval(interval);
-        console.log('✅ Sistema de tickets activado');
-        
-        emailjs.init('OeCSnjYMl3_EiMBct');
-        
-        Reservaciones.adminConfirmar = async function(id) {
-          if (!confirm('¿Confirmar esta reservación? Se enviará un ticket al cliente.')) return;
-          
-          const btn = event?.target;
-          if (btn) {
-            btn.disabled = true;
-            btn.textContent = '⏳ Enviando...';
-          }
-          
-          try {
-            const { doc, updateDoc, getDoc } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js');
-            
-            const reservaRef = doc(window.sakuraDB, 'reservaciones', id);
-            const reservaSnap = await getDoc(reservaRef);
-            const reserva = { id: reservaSnap.id, ...reservaSnap.data() };
-            
-            await updateDoc(reservaRef, { estado: 'confirmada' });
-            UI.toast('✅ Reservación confirmada', 'ok');
-            
-            const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-            const [y, m, d] = reserva.fecha.split('-');
-            const fechaFormateada = `${parseInt(d)} de ${meses[parseInt(m)-1]} de ${y}`;
-            
-            // Parámetros - Asegurar que to_email existe
-            const templateParams = {
-              to_email: reserva.email,      // 👈 Este es el campo que EmailJS espera
-              to_name: reserva.nombre,
-              reservation_date: fechaFormateada,
-              reservation_time: `${reserva.horaEntrada} - ${reserva.horaSalida}`,
-              reservation_persons: reserva.personas.toString(),
-              reservation_area: reserva.area === 'fumar' ? 'Fumar 🚬' : 'No Fumar 🚭',
-              reservation_notes: reserva.notas || 'Ninguna',
-              reservation_id: reserva.id.substring(0, 8),
-              year: new Date().getFullYear().toString()
-            };
-            
-            console.log('📧 Enviando a:', reserva.email);
-            console.log('📧 Parámetros completos:', templateParams);
-            
-            // Enviar email
-            const response = await emailjs.send('service_asd2cip', 'template_azca5v4', templateParams);
-            
-            console.log('✅ Email enviado con éxito:', response);
-            UI.toast(`📧 Ticket enviado a ${reserva.email}`, 'ok');
-            
-          } catch(e) {
-            console.error('❌ Error detallado:', e);
-            UI.toast('Error: ' + (e.text || e.message || 'No se pudo enviar'), 'err');
-          } finally {
-            if (btn) {
-              btn.disabled = false;
-              btn.textContent = '✅ Aceptar';
-            }
-          }
-        };
-      }
-    }, 500);
-  })();
-</script>
-  
 </body>
 </html>
