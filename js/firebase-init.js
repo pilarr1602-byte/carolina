@@ -8,13 +8,8 @@ import {
   addDoc, updateDoc, deleteDoc, query, where, orderBy, onSnapshot, getDoc
 } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
-let _db = null;
-let _auth = null;
-let _firebaseApp = null;
-let _firebaseReady = false;
-
-// Configuración fija de Firebase (para que no pida conectar nunca)
-const FIXED_FIREBASE_CONFIG = {
+// ========== CONFIGURACIÓN FIJA DE FIREBASE ==========
+const FIXED_CONFIG = {
   apiKey: "AIzaSyDKQO1hwMnyfVKMLPbGvzPYyigNfno1WWY",
   authDomain: "sakurarestaurant1-c90a5.firebaseapp.com",
   projectId: "sakurarestaurant1-c90a5",
@@ -23,9 +18,14 @@ const FIXED_FIREBASE_CONFIG = {
   appId: "1:864876802258:web:2c767936c45e6c452afd0b"
 };
 
+let _db = null;
+let _auth = null;
+let _firebaseApp = null;
+let _firebaseReady = false;
+
 async function initFirebase() {
-  // Usar configuración fija, no pedir wizard
-  return await connectFirebase(FIXED_FIREBASE_CONFIG);
+  // Usar configuración fija (no preguntar)
+  return await connectFirebase(FIXED_CONFIG);
 }
 
 async function connectFirebase(config) {
@@ -45,43 +45,21 @@ async function connectFirebase(config) {
   }
 }
 
-function saveConfig(config) { localStorage.setItem('sakura_fb_config', JSON.stringify(config)); }
-function loadConfig() { try { const raw = localStorage.getItem('sakura_fb_config'); return raw ? JSON.parse(raw) : null; } catch { return null; } }
-
 const FirebaseSetup = {
   init: initFirebase,
   async quickConnect(configJson) {
-    try {
-      const cfg = typeof configJson === 'string' ? JSON.parse(configJson) : configJson;
-      saveConfig(cfg);
-      const ok = await connectFirebase(cfg);
-      if (ok) {
-        document.getElementById('fbSetupOverlay')?.classList.add('hidden');
-        window.location.reload();
-      }
-      return ok;
-    } catch(e) { console.error(e); return false; }
+    const cfg = typeof configJson === 'string' ? JSON.parse(configJson) : configJson;
+    return await connectFirebase(cfg);
   },
-  async save() {
-    const textarea = document.getElementById('fbConfigInput');
-    const msgEl = document.getElementById('fbSetupMsg');
-    try {
-      const cfg = JSON.parse(textarea.value.trim());
-      msgEl.textContent = '⏳ Conectando...';
-      const ok = await this.quickConnect(cfg);
-      if (ok) {
-        msgEl.textContent = '✅ Conectado! Recargando...';
-        msgEl.className = 'fb-msg ok';
-      } else throw new Error('No se pudo conectar');
-    } catch(e) {
-      msgEl.textContent = '❌ Config inválida: ' + e.message;
-      msgEl.className = 'fb-msg err';
-    }
-  },
-  clearConfig: () => { localStorage.removeItem('sakura_fb_config'); window.location.reload(); }
+  save() {},
+  clearConfig: () => {}
 };
 
-const FirebaseState = { isReady: () => _firebaseReady, getDB: () => _db, getAuth: () => _auth };
+const FirebaseState = { 
+  isReady: () => _firebaseReady, 
+  getDB: () => _db, 
+  getAuth: () => _auth 
+};
 
 export { 
   FirebaseSetup, FirebaseState, _db as db, _auth as auth,
