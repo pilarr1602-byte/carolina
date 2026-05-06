@@ -9,7 +9,11 @@ import {
   addDoc, updateDoc, deleteDoc, query, where, orderBy, onSnapshot, getDoc
 } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
+<<<<<<< HEAD
 // Configuración fija
+=======
+// ========== CONFIGURACIÓN FIJA DE FIREBASE ==========
+>>>>>>> 16a2f61ae5a6d5bddb3504998a8d6cd6e785f2a8
 const FIXED_CONFIG = {
   apiKey: "AIzaSyDKQO1hwMnyfVKMLPbGvzPYyigNfno1WWY",
   authDomain: "sakurarestaurant1-c90a5.firebaseapp.com",
@@ -25,6 +29,10 @@ let _firebaseApp = null;
 let _firebaseReady = false;
 
 async function initFirebase() {
+<<<<<<< HEAD
+=======
+  // Usar configuración fija (no preguntar)
+>>>>>>> 16a2f61ae5a6d5bddb3504998a8d6cd6e785f2a8
   return await connectFirebase(FIXED_CONFIG);
 }
 
@@ -63,14 +71,20 @@ const FirebaseState = {
   getDB: () => _db, 
   getAuth: () => _auth 
 };
+<<<<<<< HEAD
 
 // EXPONER GLOBALMENTE
 window.sakuraDB = _db;
 window.FirebaseState = FirebaseState;
+=======
+>>>>>>> 16a2f61ae5a6d5bddb3504998a8d6cd6e785f2a8
 
 export { 
   FirebaseSetup, FirebaseState, _db as db, _auth as auth,
   collection, getDocs, setDoc, doc, serverTimestamp, addDoc, updateDoc, deleteDoc, query, where, orderBy, onSnapshot, getDoc,
   getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, updateProfile, onAuthStateChanged
 };
+<<<<<<< HEAD
 
+=======
+>>>>>>> 16a2f61ae5a6d5bddb3504998a8d6cd6e785f2a8
