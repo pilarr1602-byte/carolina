@@ -1,3 +1,4 @@
+// js/auth.js - VERSIÓN CORREGIDA
 import { 
   auth, signInWithEmailAndPassword, createUserWithEmailAndPassword,
   signOut, updateProfile, onAuthStateChanged, db, doc, getDoc, setDoc, serverTimestamp
@@ -44,12 +45,10 @@ function onLogin(user) {
   if (needLogin) needLogin.classList.add('hidden');
   if (reservaForm) reservaForm.classList.remove('hidden');
 
-  // IMPORTANTE: Verificar que Reservaciones existe y tiene el método correcto
-  if (typeof Reservaciones !== 'undefined') {
-    console.log('✅ Llamando a Reservaciones.loadMisReservas con uid:', user.uid);
+  // Cargar reservaciones
+  if (typeof Reservaciones !== 'undefined' && Reservaciones.loadMisReservas) {
+    console.log('🔄 Cargando reservaciones para:', user.uid);
     Reservaciones.loadMisReservas(user.uid);
-  } else {
-    console.error('❌ Reservaciones no está definido');
   }
 }
 
@@ -145,6 +144,8 @@ const Auth = {
     return _currentProfile?.rol === 'admin';
   }
 };
-// Exponer Auth globalmente para que esté disponible en la consola y en otros scripts
+
+// 👇 EXPONER GLOBALMENTE 👇
 window.Auth = Auth;
+
 export default Auth;

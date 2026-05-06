@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes"/>
@@ -7,6 +8,26 @@
   <link rel="stylesheet" href="css/main.css"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;700;900&family=Shippori+Mincho+B1:wght@400;600;800&family=Zen+Kaku+Gothic+New:wght@300;400;700&display=swap" rel="stylesheet"/>
+  <style>
+    .btn-translate {
+      background: transparent;
+      border: 1px solid #c98a2a;
+      color: #f0d080;
+      padding: 0.45em 1.2em;
+      border-radius: 9999px;
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      font-weight: 700;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+      margin-right: 0.5rem;
+    }
+    .btn-translate:hover {
+      background: #c98a2a;
+      color: #150808;
+      border-color: #c98a2a;
+    }
+  </style>
 </head>
 <body>
 
@@ -14,22 +35,23 @@
   <nav class="navbar" id="navbar">
     <a class="nav-brand" href="#inicio">
       <span class="brand-kanji">桜</span>
-      <span class="brand-text">Sakura</span>
+      <span class="brand-text" data-i18n="brand">Sakura</span>
     </a>
     <button class="nav-toggle" id="navToggle" aria-label="Abrir menú">
       <span></span><span></span><span></span>
     </button>
     <ul class="nav-links" id="navLinks">
-      <li><a href="#inicio" class="nav-link">🏮 Inicio</a></li>
-      <li><a href="#menu" class="nav-link">🍱 Menú</a></li>
-      <li><a href="#reservaciones" class="nav-link">📅 Reservar</a></li>
-      <li><a href="#nosotros" class="nav-link">🌸 Nosotros</a></li>
-      <li><a href="#contacto" class="nav-link">📍 Contacto</a></li>
+      <li><a href="#inicio" class="nav-link" data-i18n="nav_inicio">🏮 Inicio</a></li>
+      <li><a href="#menu" class="nav-link" data-i18n="nav_menu">🍱 Menú</a></li>
+      <li><a href="#reservaciones" class="nav-link" data-i18n="nav_reservar">📅 Reservar</a></li>
+      <li><a href="#nosotros" class="nav-link" data-i18n="nav_nosotros">🌸 Nosotros</a></li>
+      <li><a href="#contacto" class="nav-link" data-i18n="nav_contacto">📍 Contacto</a></li>
       <li class="nav-auth-item">
-        <button class="btn-nav-login" id="btnNavLogin">⛩ Entrar</button>
+        <button class="btn-translate" id="btnTranslate">🌐 English</button>
+        <button class="btn-nav-login" id="btnNavLogin" data-i18n="nav_entrar">⛩ Entrar</button>
         <div class="nav-user-menu hidden" id="navUserMenu">
           <span class="nav-username" id="navUsername">—</span>
-          <button class="btn-nav-logout" id="btnNavLogout">Salir</button>
+          <button class="btn-nav-logout" id="btnNavLogout" data-i18n="nav_salir">Salir</button>
         </div>
       </li>
     </ul>
@@ -48,10 +70,10 @@
         <span class="banner-kanji">桜</span>
         <span class="banner-name">Sakura</span>
       </h1>
-      <p class="banner-sub anim-up" style="--d:.3s">Sabores ancestrales del País del Sol Naciente</p>
+      <p class="banner-sub anim-up" style="--d:.3s" data-i18n="banner_sub">Sabores ancestrales del País del Sol Naciente</p>
       <div class="banner-ctas anim-up" style="--d:.45s">
-        <a href="#menu" class="btn-primary">🍜 Ver Menú</a>
-        <a href="#reservaciones" class="btn-ghost">📅 Reservar Mesa</a>
+        <a href="#menu" class="btn-primary" data-i18n="banner_btn_menu">🍜 Ver Menú</a>
+        <a href="#reservaciones" class="btn-ghost" data-i18n="banner_btn_reservar">📅 Reservar Mesa</a>
       </div>
     </div>
     <div class="banner-scroll">
@@ -64,12 +86,12 @@
     <div class="cats-strip">
       <div class="container">
         <div class="cats-row">
-          <button class="cat-pill active" data-cat="all">🍽 Todos</button>
-          <button class="cat-pill" data-cat="comidas">🍱 Comidas</button>
-          <button class="cat-pill" data-cat="postres">🍡 Postres</button>
-          <button class="cat-pill" data-cat="bebidas">🍶 Bebidas</button>
-          <button class="cat-pill" data-cat="snacks">🍢 Snacks</button>
-          <button class="cat-pill" data-cat="tradicionales">🍛 Tradicionales</button>
+          <button class="cat-pill active" data-cat="all" data-i18n="cat_todos">🍽 Todos</button>
+          <button class="cat-pill" data-cat="comidas" data-i18n="cat_comidas">🍱 Comidas</button>
+          <button class="cat-pill" data-cat="postres" data-i18n="cat_postres">🍡 Postres</button>
+          <button class="cat-pill" data-cat="bebidas" data-i18n="cat_bebidas">🍶 Bebidas</button>
+          <button class="cat-pill" data-cat="snacks" data-i18n="cat_snacks">🍢 Snacks</button>
+          <button class="cat-pill" data-cat="tradicionales" data-i18n="cat_tradicionales">🍛 Tradicionales</button>
         </div>
       </div>
     </div>
@@ -77,13 +99,13 @@
     <section id="menu" class="s-menu">
       <div class="container">
         <header class="s-header">
-          <span class="s-tag">お品書き • Menú</span>
-          <h2 class="s-title">Nuestros Platillos</h2>
-          <p class="s-desc">Cada bocado es un viaje a Japón. Ingredientes frescos, técnicas ancestrales.</p>
+          <span class="s-tag" data-i18n="menu_tag">お品書き • Menú</span>
+          <h2 class="s-title" data-i18n="menu_title">Nuestros Platillos</h2>
+          <p class="s-desc" data-i18n="menu_desc">Cada bocado es un viaje a Japón. Ingredientes frescos, técnicas ancestrales.</p>
         </header>
         <div class="menu-spinner" id="menuSpinner">
           <div class="spinner-petal">🌸</div>
-          <p>Cargando menú...</p>
+          <p data-i18n="menu_loading">Cargando menú...</p>
         </div>
         <div class="menu-grid" id="menuGrid"></div>
       </div>
@@ -94,14 +116,14 @@
         <div class="aside-inner">
           <div class="aside-text">
             <span class="s-tag">今日のおすすめ</span>
-            <h3 class="aside-title">Especial del Chef</h3>
-            <p>Creaciones de temporada inspiradas en los grandes festivales japoneses. Disponibles solo hoy.</p>
-            <a href="#reservaciones" class="btn-primary">Reservar ahora 🎋</a>
+            <h3 class="aside-title" data-i18n="aside_title">Especial del Chef</h3>
+            <p data-i18n="aside_desc">Creaciones de temporada inspiradas en los grandes festivales japoneses. Disponibles solo hoy.</p>
+            <a href="#reservaciones" class="btn-primary" data-i18n="aside_btn">Reservar ahora 🎋</a>
           </div>
           <div class="aside-cards">
-            <div class="float-card"><span class="fc-emoji">🍣</span><div><strong>Omakase Premium</strong><small>Selección del chef · $580</small></div></div>
-            <div class="float-card" style="--fd:.4s"><span class="fc-emoji">🍜</span><div><strong>Ramen de Temporada</strong><small>Miso especial · $185</small></div></div>
-            <div class="float-card" style="--fd:.8s"><span class="fc-emoji">🍡</span><div><strong>Mochi Sakura</strong><small>Postre primaveral · $95</small></div></div>
+            <div class="float-card"><span class="fc-emoji">🍣</span><div><strong data-i18n="fc1_name">Omakase Premium</strong><small data-i18n="fc1_sub">Selección del chef · $580</small></div></div>
+            <div class="float-card" style="--fd:.4s"><span class="fc-emoji">🍜</span><div><strong data-i18n="fc2_name">Ramen de Temporada</strong><small data-i18n="fc2_sub">Miso especial · $185</small></div></div>
+            <div class="float-card" style="--fd:.8s"><span class="fc-emoji">🍡</span><div><strong data-i18n="fc3_name">Mochi Sakura</strong><small data-i18n="fc3_sub">Postre primaveral · $95</small></div></div>
           </div>
         </div>
       </div>
@@ -110,33 +132,46 @@
     <section id="reservaciones" class="s-reservas">
       <div class="container">
         <header class="s-header">
-          <span class="s-tag">ご予約 • Reservaciones</span>
-          <h2 class="s-title">Reserva tu Mesa</h2>
-          <p class="s-desc">Garantiza tu experiencia Sakura. Área de fumar y no fumar disponibles.</p>
+          <span class="s-tag" data-i18n="res_tag">ご予約 • Reservaciones</span>
+          <h2 class="s-title" data-i18n="res_title">Reserva tu Mesa</h2>
+          <p class="s-desc" data-i18n="res_desc">Garantiza tu experiencia Sakura. Área de fumar y no fumar disponibles.</p>
         </header>
         <div class="reservas-grid">
           <div class="reserva-card" id="reservaCard">
             <div class="need-login" id="needLogin">
               <span class="nl-icon">🔐</span>
-              <p>Inicia sesión para poder reservar tu mesa</p>
-              <button class="btn-primary" id="openModalBtn">Iniciar Sesión</button>
+              <p data-i18n="res_needlogin">Inicia sesión para poder reservar tu mesa</p>
+              <button class="btn-primary" id="openModalBtn" data-i18n="res_loginbtn">Iniciar Sesión</button>
             </div>
             <form class="reserva-form hidden" id="reservaForm" novalidate>
-              <h3>Nueva Reservación</h3>
+              <h3 data-i18n="res_form_title">Nueva Reservación</h3>
               <div class="f-row">
-                <div class="f-group"><label>📅 Fecha</label><input type="date" id="rDate" required/></div>
-                <div class="f-group"><label>🕐 Hora entrada</label><input type="time" id="rTime" min="12:00" max="22:00" required/></div>
+                <div class="f-group"><label data-i18n="res_fecha">📅 Fecha</label><input type="date" id="rDate" required/></div>
+                <div class="f-group"><label data-i18n="res_hora">🕐 Hora entrada</label><input type="time" id="rTime" min="12:00" max="22:00" required/></div>
               </div>
               <div class="f-row">
-                <div class="f-group"><label>👥 Personas</label><select id="rPersons"><option value="1">1 persona</option><option value="2" selected>2 personas</option><option value="3">3 personas</option><option value="4">4 personas</option><option value="5">5 personas</option><option value="6">6+ personas</option></select></div>
-                <div class="f-group"><label>🚬 Área</label><select id="rArea"><option value="no-fumar">🚭 No Fumar</option><option value="fumar">🚬 Fumar</option></select></div>
+                <div class="f-group"><label data-i18n="res_personas">👥 Personas</label><select id="rPersons">
+                  <option value="1" data-i18n="res_p1">1 persona</option>
+                  <option value="2" selected data-i18n="res_p2">2 personas</option>
+                  <option value="3" data-i18n="res_p3">3 personas</option>
+                  <option value="4" data-i18n="res_p4">4 personas</option>
+                  <option value="5" data-i18n="res_p5">5 personas</option>
+                  <option value="6" data-i18n="res_p6">6+ personas</option>
+                </select></div>
+                <div class="f-group"><label data-i18n="res_area">🚬 Área</label><select id="rArea">
+                  <option value="no-fumar" data-i18n="res_nofumar">🚭 No Fumar</option>
+                  <option value="fumar" data-i18n="res_fumar">🚬 Fumar</option>
+                </select></div>
               </div>
-              <div class="f-group"><label>📝 Peticiones especiales</label><textarea id="rNotes" placeholder="Alergias, celebraciones, silla para bebé…"></textarea></div>
-              <div class="f-info">ℹ️ Reserva válida hasta <strong>3 horas</strong> desde tu entrada.</div>
-              <button type="submit" class="btn-primary btn-full" id="btnReservar">✓ Confirmar Reservación</button>
+              <div class="f-group"><label data-i18n="res_notas">📝 Peticiones especiales</label><textarea id="rNotes" data-i18n-placeholder="res_notas_ph" placeholder="Alergias, celebraciones, silla para bebé…"></textarea></div>
+              <div class="f-info" data-i18n="res_info">ℹ️ Reserva válida hasta <strong>3 horas</strong> desde tu entrada.</div>
+              <button type="submit" class="btn-primary btn-full" id="btnReservar" data-i18n="res_confirm">✓ Confirmar Reservación</button>
             </form>
           </div>
-          <div class="mis-reservas-card"><h3>📋 Mis Reservaciones</h3><div id="misReservas"><p class="empty-msg">Inicia sesión para ver tus reservaciones anteriores.</p></div></div>
+          <div class="mis-reservas-card">
+            <h3 data-i18n="mis_res_title">📋 Mis Reservaciones</h3>
+            <div id="misReservas"><p class="empty-msg" data-i18n="mis_res_empty">Inicia sesión para ver tus reservaciones anteriores.</p></div>
+          </div>
         </div>
       </div>
     </section>
@@ -146,10 +181,14 @@
         <div class="nosotros-grid">
           <div class="nos-text">
             <span class="s-tag">私たちについて</span>
-            <h2 class="s-title left">Nuestra Historia</h2>
-            <p>Desde 2008, Sakura es el destino para quienes buscan la autenticidad de la cocina japonesa. Nuestros chefs se formaron en Tokio, Osaka y Kyoto.</p>
-            <p>Usamos ingredientes importados directamente de Japón: dashi, miso artesanal, sake de primera calidad y arroz Koshihikari.</p>
-            <div class="nos-stats"><div class="stat"><strong>16+</strong><span>Años de experiencia</span></div><div class="stat"><strong>50</strong><span>Platillos auténticos</span></div><div class="stat"><strong>4.9⭐</strong><span>Calificación promedio</span></div></div>
+            <h2 class="s-title left" data-i18n="nos_title">Nuestra Historia</h2>
+            <p data-i18n="nos_p1">Desde 2008, Sakura es el destino para quienes buscan la autenticidad de la cocina japonesa. Nuestros chefs se formaron en Tokio, Osaka y Kyoto.</p>
+            <p data-i18n="nos_p2">Usamos ingredientes importados directamente de Japón: dashi, miso artesanal, sake de primera calidad y arroz Koshihikari.</p>
+            <div class="nos-stats">
+              <div class="stat"><strong>16+</strong><span data-i18n="stat1">Años de experiencia</span></div>
+              <div class="stat"><strong>50</strong><span data-i18n="stat2">Platillos auténticos</span></div>
+              <div class="stat"><strong>4.9⭐</strong><span data-i18n="stat3">Calificación promedio</span></div>
+            </div>
           </div>
           <div class="nos-visual"><div class="nos-stack"><div class="ns-card ns1">🏯</div><div class="ns-card ns2">⛩</div><div class="ns-card ns3">🌸</div></div></div>
         </div>
@@ -161,12 +200,41 @@
     <div class="footer-topline"></div>
     <div class="container">
       <div class="footer-grid">
-        <div class="f-brand"><div class="footer-logo"><span>桜</span> Sakura</div><p>Auténtica cocina japonesa.<br>Sabores que trascienden el tiempo.</p><div class="socials"><a href="#" aria-label="Instagram">📸</a><a href="#" aria-label="Facebook">📘</a><a href="#" aria-label="TikTok">🎵</a></div></div>
-        <div class="f-col"><h4>Navegación</h4><ul><li><a href="#inicio">Inicio</a></li><li><a href="#menu">Menú</a></li><li><a href="#reservaciones">Reservar</a></li><li><a href="#nosotros">Nosotros</a></li></ul></div>
-        <div class="f-col"><h4>🕐 Horarios</h4><ul><li>Lun–Vie: 12:00 – 22:00</li><li>Sábado: 11:00 – 23:00</li><li>Domingo: 11:00 – 21:00</li></ul></div>
-        <div class="f-col"><h4>📍 Contacto</h4><ul><li>📞 +52 55 1234-5678</li><li>✉️ hola@sakura-resto.mx</li><li>📍 Av. Japón 42, CDMX</li></ul></div>
+        <div class="f-brand">
+          <div class="footer-logo"><span>桜</span> Sakura</div>
+          <p data-i18n="footer_slogan">Auténtica cocina japonesa.<br>Sabores que trascienden el tiempo.</p>
+          <div class="socials"><a href="#" aria-label="Instagram">📸</a><a href="#" aria-label="Facebook">📘</a><a href="#" aria-label="TikTok">🎵</a></div>
+        </div>
+        <div class="f-col">
+          <h4 data-i18n="footer_nav">Navegación</h4>
+          <ul>
+            <li><a href="#inicio" data-i18n="nav_inicio2">Inicio</a></li>
+            <li><a href="#menu" data-i18n="nav_menu2">Menú</a></li>
+            <li><a href="#reservaciones" data-i18n="nav_reservar2">Reservar</a></li>
+            <li><a href="#nosotros" data-i18n="nav_nosotros2">Nosotros</a></li>
+          </ul>
+        </div>
+        <div class="f-col">
+          <h4 data-i18n="footer_horarios">🕐 Horarios</h4>
+          <ul>
+            <li data-i18n="hora1">Lun–Vie: 12:00 – 22:00</li>
+            <li data-i18n="hora2">Sábado: 11:00 – 23:00</li>
+            <li data-i18n="hora3">Domingo: 11:00 – 21:00</li>
+          </ul>
+        </div>
+        <div class="f-col">
+          <h4 data-i18n="footer_contacto">📍 Contacto</h4>
+          <ul>
+            <li>📞 +52 55 1234-5678</li>
+            <li>✉️ hola@sakura-resto.mx</li>
+            <li data-i18n="footer_dir">📍 Av. Japón 42, CDMX</li>
+          </ul>
+        </div>
       </div>
-      <div class="footer-bottom"><p>© 2025 Sakura Restaurante Japonés — Todos los derechos reservados</p><p id="devHint" class="dev-hint">🔧 Dev: Abre <kbd>F12</kbd> → Console para configurar Firebase automáticamente</p></div>
+      <div class="footer-bottom">
+        <p data-i18n="footer_copy">© 2025 Sakura Restaurante Japonés — Todos los derechos reservados</p>
+        <p id="devHint" class="dev-hint" data-i18n="footer_dev">🔧 Dev: Abre <kbd>F12</kbd> → Console para configurar Firebase automáticamente</p>
+      </div>
     </div>
   </footer>
 
@@ -175,28 +243,32 @@
     <div class="modal-box">
       <button class="modal-x" id="closeModalBtn">✕</button>
       <div class="modal-tabs">
-        <button class="mtab active" data-tab="login" id="tabLoginBtn">Iniciar Sesión</button>
-        <button class="mtab" data-tab="register" id="tabRegisterBtn">Registrarse</button>
+        <button class="mtab active" data-tab="login" id="tabLoginBtn" data-i18n="modal_login">Iniciar Sesión</button>
+        <button class="mtab" data-tab="register" id="tabRegisterBtn" data-i18n="modal_register">Registrarse</button>
       </div>
       <div class="tab-pane" id="pane-login">
         <div class="modal-icon">桜</div>
         <form id="loginForm" novalidate>
-          <div class="f-group"><label>📧 Correo electrónico</label><input type="email" id="lEmail" placeholder="tu@correo.com" required/></div>
-          <div class="f-group"><label>🔑 Contraseña</label><input type="password" id="lPass" placeholder="••••••••" required/></div>
-          <div class="f-group check-row"><label class="check-label"><input type="checkbox" id="lIsAdmin"/><span>Acceso administrador</span></label></div>
-          <button type="submit" class="btn-primary btn-full">Entrar ⛩</button>
+          <div class="f-group"><label data-i18n="login_email">📧 Correo electrónico</label><input type="email" id="lEmail" data-i18n-placeholder="login_email_ph" placeholder="tu@correo.com" required/></div>
+          <div class="f-group"><label data-i18n="login_pass">🔑 Contraseña</label><input type="password" id="lPass" placeholder="••••••••" required/></div>
+          <div class="f-group check-row"><label class="check-label"><input type="checkbox" id="lIsAdmin"/><span data-i18n="login_admin">Acceso administrador</span></label></div>
+          <button type="submit" class="btn-primary btn-full" data-i18n="login_btn">Entrar ⛩</button>
           <p class="auth-err hidden" id="loginErr"></p>
-          <div class="demo-box"><strong>Cuentas demo:</strong><br>👤 user@sakura.mx / sakura123<br>⚙️ admin@sakura.mx / admin123</div>
+          <div class="demo-box">
+            <strong data-i18n="demo_title">Cuentas demo:</strong><br>
+            👤 user@sakura.mx / sakura123<br>
+            ⚙️ admin@sakura.mx / admin123
+          </div>
         </form>
       </div>
       <div class="tab-pane hidden" id="pane-register">
         <div class="modal-icon">🌸</div>
         <form id="registerForm" novalidate>
-          <div class="f-group"><label>👤 Nombre completo</label><input type="text" id="rName" placeholder="Tanaka Hanako" required/></div>
-          <div class="f-group"><label>📧 Correo</label><input type="email" id="rEmail" placeholder="tu@correo.com" required/></div>
-          <div class="f-group"><label>📱 Teléfono (opcional)</label><input type="tel" id="rPhone" placeholder="+52 55…"/></div>
-          <div class="f-group"><label>🔑 Contraseña (mín. 6 chars)</label><input type="password" id="rPass" placeholder="••••••••" required/></div>
-          <button type="submit" class="btn-primary btn-full">Crear Cuenta 🌸</button>
+          <div class="f-group"><label data-i18n="reg_name">👤 Nombre completo</label><input type="text" id="rName" placeholder="Tanaka Hanako" required/></div>
+          <div class="f-group"><label data-i18n="reg_email">📧 Correo</label><input type="email" id="rEmail" data-i18n-placeholder="login_email_ph" placeholder="tu@correo.com" required/></div>
+          <div class="f-group"><label data-i18n="reg_phone">📱 Teléfono (opcional)</label><input type="tel" id="rPhone" placeholder="+52 55…"/></div>
+          <div class="f-group"><label data-i18n="reg_pass">🔑 Contraseña (mín. 6 chars)</label><input type="password" id="rPass" placeholder="••••••••" required/></div>
+          <button type="submit" class="btn-primary btn-full" data-i18n="reg_btn">Crear Cuenta 🌸</button>
           <p class="auth-err hidden" id="registerErr"></p>
         </form>
       </div>
@@ -206,14 +278,14 @@
   <div class="modal-bg" id="modalAdmin">
     <div class="modal-box modal-xl">
       <button class="modal-x" onclick="UI.hideModal('modalAdmin')">✕</button>
-      <div class="admin-head"><h2>⚙️ Panel Administrador</h2><span class="admin-badge">ADMIN</span></div>
+      <div class="admin-head"><h2 data-i18n="admin_title">⚙️ Panel Administrador</h2><span class="admin-badge">ADMIN</span></div>
       <div class="admin-tabs">
-        <button class="atab active" onclick="Admin.showTab('reservas')">📅 Reservaciones</button>
-        <button class="atab" onclick="Admin.showTab('checklist')">✅ Check-in / Out</button>
-        <button class="atab" onclick="Admin.showTab('menu')">🍱 Gestión Menú</button>
-        <button class="atab" onclick="Admin.showTab('usuarios')">👥 Usuarios</button>
+        <button class="atab active" onclick="Admin.showTab('reservas')" data-i18n="admin_tab_res">📅 Reservaciones</button>
+        <button class="atab" onclick="Admin.showTab('checklist')" data-i18n="admin_tab_check">✅ Check-in / Out</button>
+        <button class="atab" onclick="Admin.showTab('menu')" data-i18n="admin_tab_menu">🍱 Gestión Menú</button>
+        <button class="atab" onclick="Admin.showTab('usuarios')" data-i18n="admin_tab_users">👥 Usuarios</button>
       </div>
-      <div id="adminContent" class="admin-content"><p class="loading-msg">Cargando…</p></div>
+      <div id="adminContent" class="admin-content"><p class="loading-msg" data-i18n="admin_loading">Cargando…</p></div>
     </div>
   </div>
 
@@ -248,10 +320,274 @@
   <script type="module" src="js/auth.js"></script>
   <script type="module" src="js/app.js"></script>
 
+  <!-- ===== SISTEMA DE TRADUCCIÓN MANUAL (SIN APIs EXTERNAS) ===== -->
+  <script>
+  (function() {
+
+    // ──────────────────────────────────────────────
+    // DICCIONARIO DE TRADUCCIONES
+    // ──────────────────────────────────────────────
+    const translations = {
+      es: {
+        // Navbar
+        brand:           'Sakura',
+        nav_inicio:      '🏮 Inicio',
+        nav_menu:        '🍱 Menú',
+        nav_reservar:    '📅 Reservar',
+        nav_nosotros:    '🌸 Nosotros',
+        nav_contacto:    '📍 Contacto',
+        nav_entrar:      '⛩ Entrar',
+        nav_salir:       'Salir',
+        // Banner
+        banner_sub:      'Sabores ancestrales del País del Sol Naciente',
+        banner_btn_menu: '🍜 Ver Menú',
+        banner_btn_reservar: '📅 Reservar Mesa',
+        // Categorías
+        cat_todos:       '🍽 Todos',
+        cat_comidas:     '🍱 Comidas',
+        cat_postres:     '🍡 Postres',
+        cat_bebidas:     '🍶 Bebidas',
+        cat_snacks:      '🍢 Snacks',
+        cat_tradicionales: '🍛 Tradicionales',
+        // Menú section
+        menu_tag:        'お品書き • Menú',
+        menu_title:      'Nuestros Platillos',
+        menu_desc:       'Cada bocado es un viaje a Japón. Ingredientes frescos, técnicas ancestrales.',
+        menu_loading:    'Cargando menú...',
+        // Aside
+        aside_title:     'Especial del Chef',
+        aside_desc:      'Creaciones de temporada inspiradas en los grandes festivales japoneses. Disponibles solo hoy.',
+        aside_btn:       'Reservar ahora 🎋',
+        fc1_name:        'Omakase Premium',
+        fc1_sub:         'Selección del chef · $580',
+        fc2_name:        'Ramen de Temporada',
+        fc2_sub:         'Miso especial · $185',
+        fc3_name:        'Mochi Sakura',
+        fc3_sub:         'Postre primaveral · $95',
+        // Reservaciones
+        res_tag:         'ご予約 • Reservaciones',
+        res_title:       'Reserva tu Mesa',
+        res_desc:        'Garantiza tu experiencia Sakura. Área de fumar y no fumar disponibles.',
+        res_needlogin:   'Inicia sesión para poder reservar tu mesa',
+        res_loginbtn:    'Iniciar Sesión',
+        res_form_title:  'Nueva Reservación',
+        res_fecha:       '📅 Fecha',
+        res_hora:        '🕐 Hora entrada',
+        res_personas:    '👥 Personas',
+        res_p1: '1 persona', res_p2: '2 personas', res_p3: '3 personas',
+        res_p4: '4 personas', res_p5: '5 personas', res_p6: '6+ personas',
+        res_area:        '🚬 Área',
+        res_nofumar:     '🚭 No Fumar',
+        res_fumar:       '🚬 Fumar',
+        res_notas:       '📝 Peticiones especiales',
+        res_notas_ph:    'Alergias, celebraciones, silla para bebé…',
+        res_info:        'ℹ️ Reserva válida hasta <strong>3 horas</strong> desde tu entrada.',
+        res_confirm:     '✓ Confirmar Reservación',
+        mis_res_title:   '📋 Mis Reservaciones',
+        mis_res_empty:   'Inicia sesión para ver tus reservaciones anteriores.',
+        // Nosotros
+        nos_title:       'Nuestra Historia',
+        nos_p1:          'Desde 2008, Sakura es el destino para quienes buscan la autenticidad de la cocina japonesa. Nuestros chefs se formaron en Tokio, Osaka y Kyoto.',
+        nos_p2:          'Usamos ingredientes importados directamente de Japón: dashi, miso artesanal, sake de primera calidad y arroz Koshihikari.',
+        stat1:           'Años de experiencia',
+        stat2:           'Platillos auténticos',
+        stat3:           'Calificación promedio',
+        // Footer
+        footer_slogan:   'Auténtica cocina japonesa.<br>Sabores que trascienden el tiempo.',
+        footer_nav:      'Navegación',
+        nav_inicio2:     'Inicio', nav_menu2: 'Menú', nav_reservar2: 'Reservar', nav_nosotros2: 'Nosotros',
+        footer_horarios: '🕐 Horarios',
+        hora1:           'Lun–Vie: 12:00 – 22:00',
+        hora2:           'Sábado: 11:00 – 23:00',
+        hora3:           'Domingo: 11:00 – 21:00',
+        footer_contacto: '📍 Contacto',
+        footer_dir:      '📍 Av. Japón 42, CDMX',
+        footer_copy:     '© 2025 Sakura Restaurante Japonés — Todos los derechos reservados',
+        footer_dev:      '🔧 Dev: Abre <kbd>F12</kbd> → Console para configurar Firebase automáticamente',
+        // Modales
+        modal_login:     'Iniciar Sesión',
+        modal_register:  'Registrarse',
+        login_email:     '📧 Correo electrónico',
+        login_email_ph:  'tu@correo.com',
+        login_pass:      '🔑 Contraseña',
+        login_admin:     'Acceso administrador',
+        login_btn:       'Entrar ⛩',
+        demo_title:      'Cuentas demo:',
+        reg_name:        '👤 Nombre completo',
+        reg_email:       '📧 Correo',
+        reg_phone:       '📱 Teléfono (opcional)',
+        reg_pass:        '🔑 Contraseña (mín. 6 chars)',
+        reg_btn:         'Crear Cuenta 🌸',
+        // Admin
+        admin_title:     '⚙️ Panel Administrador',
+        admin_tab_res:   '📅 Reservaciones',
+        admin_tab_check: '✅ Check-in / Out',
+        admin_tab_menu:  '🍱 Gestión Menú',
+        admin_tab_users: '👥 Usuarios',
+        admin_loading:   'Cargando…',
+        // Botón traducción
+        btn_translate:   '🌐 English',
+      },
+
+      en: {
+        // Navbar
+        brand:           'Sakura',
+        nav_inicio:      '🏮 Home',
+        nav_menu:        '🍱 Menu',
+        nav_reservar:    '📅 Book',
+        nav_nosotros:    '🌸 About',
+        nav_contacto:    '📍 Contact',
+        nav_entrar:      '⛩ Sign In',
+        nav_salir:       'Sign Out',
+        // Banner
+        banner_sub:      'Ancestral flavors from the Land of the Rising Sun',
+        banner_btn_menu: '🍜 View Menu',
+        banner_btn_reservar: '📅 Book a Table',
+        // Categorías
+        cat_todos:       '🍽 All',
+        cat_comidas:     '🍱 Dishes',
+        cat_postres:     '🍡 Desserts',
+        cat_bebidas:     '🍶 Drinks',
+        cat_snacks:      '🍢 Snacks',
+        cat_tradicionales: '🍛 Traditional',
+        // Menú section
+        menu_tag:        'お品書き • Menu',
+        menu_title:      'Our Dishes',
+        menu_desc:       'Every bite is a journey to Japan. Fresh ingredients, ancestral techniques.',
+        menu_loading:    'Loading menu...',
+        // Aside
+        aside_title:     "Chef's Special",
+        aside_desc:      'Seasonal creations inspired by Japan\'s greatest festivals. Available today only.',
+        aside_btn:       'Book now 🎋',
+        fc1_name:        'Omakase Premium',
+        fc1_sub:         "Chef's selection · $580",
+        fc2_name:        'Seasonal Ramen',
+        fc2_sub:         'Special miso · $185',
+        fc3_name:        'Sakura Mochi',
+        fc3_sub:         'Spring dessert · $95',
+        // Reservaciones
+        res_tag:         'ご予約 • Reservations',
+        res_title:       'Book your Table',
+        res_desc:        'Secure your Sakura experience. Smoking and non-smoking areas available.',
+        res_needlogin:   'Sign in to book your table',
+        res_loginbtn:    'Sign In',
+        res_form_title:  'New Reservation',
+        res_fecha:       '📅 Date',
+        res_hora:        '🕐 Check-in time',
+        res_personas:    '👥 Guests',
+        res_p1: '1 guest', res_p2: '2 guests', res_p3: '3 guests',
+        res_p4: '4 guests', res_p5: '5 guests', res_p6: '6+ guests',
+        res_area:        '🚬 Area',
+        res_nofumar:     '🚭 Non-Smoking',
+        res_fumar:       '🚬 Smoking',
+        res_notas:       '📝 Special requests',
+        res_notas_ph:    'Allergies, celebrations, baby chair…',
+        res_info:        'ℹ️ Reservation valid for <strong>3 hours</strong> from check-in.',
+        res_confirm:     '✓ Confirm Reservation',
+        mis_res_title:   '📋 My Reservations',
+        mis_res_empty:   'Sign in to see your previous reservations.',
+        // Nosotros
+        nos_title:       'Our Story',
+        nos_p1:          'Since 2008, Sakura has been the destination for those seeking authentic Japanese cuisine. Our chefs trained in Tokyo, Osaka and Kyoto.',
+        nos_p2:          'We use ingredients imported directly from Japan: dashi, artisanal miso, premium sake and Koshihikari rice.',
+        stat1:           'Years of experience',
+        stat2:           'Authentic dishes',
+        stat3:           'Average rating',
+        // Footer
+        footer_slogan:   'Authentic Japanese cuisine.<br>Flavors that transcend time.',
+        footer_nav:      'Navigation',
+        nav_inicio2:     'Home', nav_menu2: 'Menu', nav_reservar2: 'Book', nav_nosotros2: 'About',
+        footer_horarios: '🕐 Hours',
+        hora1:           'Mon–Fri: 12:00 – 10:00 PM',
+        hora2:           'Saturday: 11:00 AM – 11:00 PM',
+        hora3:           'Sunday: 11:00 AM – 9:00 PM',
+        footer_contacto: '📍 Contact',
+        footer_dir:      '📍 Av. Japón 42, Mexico City',
+        footer_copy:     '© 2025 Sakura Japanese Restaurant — All rights reserved',
+        footer_dev:      '🔧 Dev: Open <kbd>F12</kbd> → Console to configure Firebase automatically',
+        // Modales
+        modal_login:     'Sign In',
+        modal_register:  'Register',
+        login_email:     '📧 Email address',
+        login_email_ph:  'you@email.com',
+        login_pass:      '🔑 Password',
+        login_admin:     'Admin access',
+        login_btn:       'Sign In ⛩',
+        demo_title:      'Demo accounts:',
+        reg_name:        '👤 Full name',
+        reg_email:       '📧 Email',
+        reg_phone:       '📱 Phone (optional)',
+        reg_pass:        '🔑 Password (min. 6 chars)',
+        reg_btn:         'Create Account 🌸',
+        // Admin
+        admin_title:     '⚙️ Admin Panel',
+        admin_tab_res:   '📅 Reservations',
+        admin_tab_check: '✅ Check-in / Out',
+        admin_tab_menu:  '🍱 Menu Management',
+        admin_tab_users: '👥 Users',
+        admin_loading:   'Loading…',
+        // Botón traducción
+        btn_translate:   '🇪🇸 Español',
+      }
+    };
+
+    // ──────────────────────────────────────────────
+    // FUNCIÓN DE APLICAR IDIOMA
+    // ──────────────────────────────────────────────
+    function applyLang(lang) {
+      const t = translations[lang];
+      if (!t) return;
+
+      // 1. Elementos con data-i18n (innerHTML)
+      document.querySelectorAll('[data-i18n]').forEach(function(el) {
+        var key = el.getAttribute('data-i18n');
+        if (t[key] !== undefined) {
+          el.innerHTML = t[key];
+        }
+      });
+
+      // 2. Elementos con data-i18n-placeholder (placeholder de inputs/textareas)
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el) {
+        var key = el.getAttribute('data-i18n-placeholder');
+        if (t[key] !== undefined) {
+          el.placeholder = t[key];
+        }
+      });
+
+      // 3. Actualizar el botón de traducción
+      var btn = document.getElementById('btnTranslate');
+      if (btn && t['btn_translate']) {
+        btn.innerHTML = t['btn_translate'];
+      }
+
+      // 4. Actualizar atributo lang del HTML
+      document.documentElement.lang = lang === 'en' ? 'en' : 'es';
+    }
+
+    // ──────────────────────────────────────────────
+    // LÓGICA DEL BOTÓN
+    // ──────────────────────────────────────────────
+    var currentLang = 'es';
+
+    var btn = document.getElementById('btnTranslate');
+    if (btn) {
+      btn.addEventListener('click', function() {
+        currentLang = currentLang === 'es' ? 'en' : 'es';
+        applyLang(currentLang);
+      });
+    }
+
+    // Aplicar idioma inicial al cargar
+    document.addEventListener('DOMContentLoaded', function() {
+      applyLang('es');
+    });
+
+  })();
+  </script>
+
   <!-- SCRIPT DE RESPALDO PARA MODALES -->
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      // Botón Entrar
       const btnEntrar = document.getElementById('btnNavLogin');
       const openModalBtn = document.getElementById('openModalBtn');
       const modalAuth = document.getElementById('modalAuth');
@@ -261,7 +597,6 @@
       const paneLogin = document.getElementById('pane-login');
       const paneRegister = document.getElementById('pane-register');
 
-      // Abrir modal
       function abrirModal() {
         if (modalAuth) modalAuth.classList.add('active');
       }
@@ -269,14 +604,12 @@
       if (btnEntrar) btnEntrar.addEventListener('click', abrirModal);
       if (openModalBtn) openModalBtn.addEventListener('click', abrirModal);
 
-      // Cerrar modal
       if (closeModalBtn) {
         closeModalBtn.addEventListener('click', function() {
           if (modalAuth) modalAuth.classList.remove('active');
         });
       }
 
-      // Cambiar pestañas
       if (tabLoginBtn && tabRegisterBtn) {
         tabLoginBtn.addEventListener('click', function() {
           tabLoginBtn.classList.add('active');
@@ -292,7 +625,6 @@
         });
       }
 
-      // Cerrar modal al hacer clic fuera
       if (modalAuth) {
         modalAuth.addEventListener('click', function(e) {
           if (e.target === modalAuth) {
@@ -306,9 +638,8 @@
   </script>
 
   <script>
-  // ========== SISTEMA DE RESERVACIONES - FUNCIONAL ==========
+  // ========== SISTEMA DE RESERVACIONES ==========
   (function() {
-    // Esperar a que Firebase y Auth estén listos
     function esperarYcargar() {
       if (typeof Auth !== 'undefined' && Auth.isLoggedIn() && typeof Reservaciones !== 'undefined') {
         console.log('✅ Usuario logueado, cargando reservaciones...');
@@ -328,16 +659,14 @@
       }
     }
     
-    // Ejecutar al cargar la página
     document.addEventListener('DOMContentLoaded', esperarYcargar);
     
-    // También ejecutar cuando se abre el modal de login (por si inician sesión)
     const observer = new MutationObserver(function() {
       const btnLogin = document.getElementById('btnNavLogin');
       const userMenu = document.getElementById('navUserMenu');
       
       if (btnLogin && btnLogin.classList.contains('hidden') && userMenu && !userMenu.classList.contains('hidden')) {
-        console.log('🔄 Sesión detectada (cambio en UI), cargando reservaciones...');
+        console.log('🔄 Sesión detectada, cargando reservaciones...');
         setTimeout(() => {
           if (Auth && Auth.getUser()) {
             Reservaciones.loadMisReservas(Auth.getUser().uid);
@@ -351,6 +680,7 @@
       observer.observe(btnNavLogin, { attributes: true, attributeFilter: ['class'] });
     }
   })();
-</script>
+  </script>
+
 </body>
 </html>

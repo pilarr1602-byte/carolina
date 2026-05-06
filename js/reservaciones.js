@@ -1,36 +1,63 @@
-// reservaciones.js - VERSIÓN QUE FUNCIONA
 let _misReservas = [];
+let _unsubRes = null;
+let _dbInstance = null;
+
+// Función para obtener la instancia de Firestore
+async function getDB() {
+  if (_dbInstance) return _dbInstance;
+  if (window.sakuraDB) {
+    _dbInstance = window.sakuraDB;
+    return _dbInstance;
+  }
+  // Si no existe, importar Firebase manualmente
+  const { initializeApp } = await import('https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js');
+  const { getFirestore } = await import('https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js');
+  const config = {
+    apiKey: "AIzaSyDKQO1hwMnyfVKMLPbGvzPYyigNfno1WWY",
+    authDomain: "sakurarestaurant1-c90a5.firebaseapp.com",
+    projectId: "sakurarestaurant1-c90a5",
+    storageBucket: "sakurarestaurant1-c90a5.firebasestorage.app",
+    messagingSenderId: "864876802258",
+    appId: "1:864876802258:web:2c767936c45e6c452afd0b"
+  };
+  const app = initializeApp(config);
+  _dbInstance = getFirestore(app);
+  window.sakuraDB = _dbInstance;
+  return _dbInstance;
+}
 
 const Reservaciones = {
   init() {
     const form = document.getElementById('reservaForm');
     if (!form) return;
     const hoy = new Date().toISOString().split('T')[0];
-    const fechaInput = document.getElementById('rDate');
-    if (fechaInput) fechaInput.min = hoy;
-    
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      await this.crear();
+    document.getElementById('rDate').min = hoy;
+    form.addEventListener('submit', async (e) => { 
+      e.preventDefault(); 
+      await this.crear(); 
     });
-    
-    console.log('✅ Reservaciones iniciado');
   },
 
   async crear() {
-    if (!Auth.isLoggedIn()) {
-      UI.toast('Debes iniciar sesión para reservar.', 'err');
-      return;
+    if (!Auth.isLoggedIn()) { 
+      UI.toast('Debes iniciar sesión para reservar.', 'err'); 
+      return; 
     }
     
     const date = document.getElementById('rDate').value;
     const time = document.getElementById('rTime').value;
-    const persons = document.getElementById('rPersons').value;
+    const persons = +document.getElementById('rPersons').value;
     const area = document.getElementById('rArea').value;
-    const notes = document.getElementById('rNotes').value;
+    const notes = document.getElementById('rNotes').value.trim();
     
-    if (!date || !time) {
-      UI.toast('Completa fecha y hora.', 'err');
+    if (!date || !time) { 
+      UI.toast('Completa fecha y hora.', 'err'); 
+      return; 
+    }
+    
+    const [h] = time.split(':').map(Number);
+    if (h < 12 || h > 22) {
+      UI.toast('Horario disponible: 12:00 – 22:00 hrs.', 'err');
       return;
     }
     
@@ -39,145 +66,174 @@ const Reservaciones = {
     btn.textContent = '⏳ Procesando...';
     
     try {
+      const db = await getDB();
+      const { collection, addDoc, serverTimestamp } = await import('https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js');
       const user = Auth.getUser();
       const profile = Auth.getProfile();
       const [h, m] = time.split(':').map(Number);
       const salida = `${String(h + 3).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
       
-      const { collection, addDoc, serverTimestamp } = await import('https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js');
-      await addDoc(collection(window.sakuraDB, 'reservaciones'), {
+      await addDoc(collection(db, 'reservaciones'), {
         uid: user.uid,
-        nombre: profile?.nombre || user.email.split('@')[0],
+        nombre: profile?.nombre || user.email,
         email: user.email,
+        telefono: profile?.telefono || '',
         fecha: date,
         horaEntrada: time,
         horaSalida: salida,
-        personas: parseInt(persons),
+        personas: persons,
         area: area,
         notas: notes,
         estado: 'pendiente',
-        createdAt: serverTimestamp()
+        checkIn: false,
+        checkOut: false,
+        createdAt: serverTimestamp(),
       });
       
-      UI.toast('✅ Reservación creada. Espera confirmación.', 'ok');
+      UI.toast('¡Reservación creada! Esperando confirmación del administrador 🌸', 'ok');
       document.getElementById('reservaForm').reset();
-      
-      // Recargar reservaciones
+      document.getElementById('rDate').min = new Date().toISOString().split('T')[0];
       await this.loadMisReservas(user.uid);
-      
-    } catch(e) {
-      console.error('Error al crear:', e);
-      UI.toast('Error: ' + e.message, 'err');
-    } finally {
-      btn.disabled = false;
-      btn.textContent = '✓ Confirmar Reservación';
+    } catch(e) { 
+      UI.toast('Error: ' + e.message, 'err'); 
+    } finally { 
+      btn.disabled = false; 
+      btn.textContent = '✓ Confirmar Reservación'; 
     }
   },
 
   async loadMisReservas(uid) {
-    console.log('📋 loadMisReservas llamado con UID:', uid);
-    
-    if (!window.sakuraDB) {
-      console.log('Firebase no listo, reintentando...');
-      setTimeout(() => this.loadMisReservas(uid), 500);
-      return;
-    }
-    
     try {
-      const { collection, query, where, getDocs, orderBy } = await import('https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js');
+      const db = await getDB();
+      const { collection, query, where, orderBy, onSnapshot } = await import('https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js');
+      
+      if (_unsubRes) _unsubRes();
       
       let q;
       if (Auth.isAdmin()) {
-        console.log('👑 ADMIN: Cargando TODAS las reservaciones');
-        q = query(collection(window.sakuraDB, 'reservaciones'), orderBy('fecha', 'desc'));
+        console.log('👑 Modo Admin: Cargando TODAS las reservaciones');
+        q = query(collection(db, 'reservaciones'), orderBy('fecha', 'desc'));
       } else {
-        console.log('👤 USUARIO: Cargando reservaciones del UID:', uid);
-        q = query(collection(window.sakuraDB, 'reservaciones'), where('uid', '==', uid), orderBy('fecha', 'desc'));
+        console.log('👤 Modo Usuario: Cargando solo mis reservaciones');
+        q = query(collection(db, 'reservaciones'), where('uid', '==', uid), orderBy('fecha', 'desc'));
       }
       
-      const querySnapshot = await getDocs(q);
-      _misReservas = [];
-      querySnapshot.forEach((doc) => {
-        _misReservas.push({ id: doc.id, ...doc.data() });
+      _unsubRes = onSnapshot(q, (snap) => { 
+        _misReservas = snap.docs.map(d => ({ id: d.id, ...d.data() })); 
+        this._renderMisReservas(_misReservas);
       });
       
-      console.log(`✅ Reservaciones encontradas: ${_misReservas.length}`);
-      this.mostrarReservas();
-      
-    } catch(e) {
-      console.error('Error en loadMisReservas:', e);
+    } catch(e) { 
+      console.warn('No se pudieron cargar reservaciones:', e);
     }
   },
 
-  mostrarReservas() {
-    const contenedor = document.getElementById('misReservas');
-    if (!contenedor) {
-      console.error('No se encontró el contenedor misReservas');
-      return;
-    }
+  _renderMisReservas(items) {
+    const el = document.getElementById('misReservas');
+    if (!el) return;
     
     const isAdmin = Auth.isAdmin();
     const hoy = new Date().toISOString().split('T')[0];
     
-    console.log('Mostrando reservas. Cantidad:', _misReservas.length, 'esAdmin:', isAdmin);
-    
-    if (_misReservas.length === 0) {
+    if (!items.length) {
       if (isAdmin) {
-        contenedor.innerHTML = '<p class="empty-msg">📭 No hay reservaciones de ningún usuario.</p>';
+        el.innerHTML = '<p class="empty-msg">📭 No hay reservaciones de ningún usuario.</p>';
       } else {
-        contenedor.innerHTML = '<p class="empty-msg">📭 Aún no tienes reservaciones. ¡Haz tu primera reserva!</p>';
+        el.innerHTML = '<p class="empty-msg">📭 Aún no tienes reservaciones. ¡Haz tu primera reserva!</p>';
       }
       return;
     }
     
-    let html = '';
-    
-    for (const r of _misReservas) {
-      const isPast = r.fecha < hoy;
-      const esPendiente = r.estado === 'pendiente';
-      const esConfirmada = r.estado === 'confirmada';
-      const esCancelada = r.estado === 'cancelada';
-      
-      let estadoTexto = '';
-      let estadoColor = '';
-      if (esPendiente) { estadoTexto = '⏳ PENDIENTE'; estadoColor = '#f39c12'; }
-      else if (esConfirmada && !isPast) { estadoTexto = '✓ CONFIRMADA'; estadoColor = '#27ae60'; }
-      else if (esConfirmada && isPast) { estadoTexto = '◉ COMPLETADA'; estadoColor = '#7f8c8d'; }
-      else if (esCancelada) { estadoTexto = '✗ CANCELADA'; estadoColor = '#e74c3c'; }
-      
-      const areaIcono = r.area === 'fumar' ? '🚬' : '🚭';
-      
-      html += `
-        <div style="margin-bottom:1rem; padding:1rem; background:white; border-radius:16px; border-left:4px solid ${estadoColor}; box-shadow:0 2px 8px rgba(0,0,0,0.05);">
-          ${isAdmin ? `<div style="color:#d9556b; font-size:0.75rem; margin-bottom:0.3rem;">👤 <strong>${r.nombre || '—'}</strong> | ${r.email || ''}</div>` : ''}
-          <div style="display:flex; justify-content:space-between; flex-wrap:wrap;">
-            <div>
-              <p style="font-weight:bold; margin-bottom:0.3rem;">📅 ${r.fecha}</p>
-              <p style="font-size:0.8rem; color:#7a6a5c;">🕐 ${r.horaEntrada} – ${r.horaSalida} | 👥 ${r.personas} persona(s)</p>
-              ${r.notas ? `<p style="font-size:0.75rem; color:#7a6a5c; margin-top:0.3rem;">📝 ${r.notas}</p>` : ''}
-            </div>
-            <div style="text-align:right;">
-              <span style="background:${estadoColor}; color:white; padding:0.2rem 0.6rem; border-radius:20px; font-size:0.7rem; font-weight:bold;">${estadoTexto}</span>
-              <span style="margin-left:0.5rem; font-size:0.7rem;">${areaIcono} ${r.area === 'fumar' ? 'Fumar' : 'No Fumar'}</span>
-            </div>
-          </div>
-          ${isAdmin && !esCancelada && !isPast && (esPendiente || esConfirmada) ? `
-            <div style="margin-top:0.75rem; display:flex; gap:0.5rem;">
-              <button onclick="Reservaciones.confirmarReserva('${r.id}')" style="background:#27ae60; color:white; border:none; padding:0.3rem 1rem; border-radius:20px; cursor:pointer;">✅ Aceptar</button>
-              <button onclick="Reservaciones.cancelarReserva('${r.id}')" style="background:#e74c3c; color:white; border:none; padding:0.3rem 1rem; border-radius:20px; cursor:pointer;">❌ Cancelar</button>
-            </div>
-          ` : ''}
-          ${!isAdmin && esPendiente && !isPast ? `
-            <button onclick="Reservaciones.cancelarReserva('${r.id}')" style="margin-top:0.75rem; background:#e74c3c; color:white; border:none; padding:0.3rem 1rem; border-radius:20px; cursor:pointer;">❌ Cancelar</button>
-          ` : ''}
-        </div>
-      `;
+    let adminTitle = '';
+    if (isAdmin) {
+      adminTitle = `<div style="background: #d9556b10; padding: 0.75rem; border-radius: 12px; margin-bottom: 1rem; border-left: 4px solid #d9556b;">
+        <strong>👑 Modo Administrador</strong><br>
+        <small style="color: var(--muted);">Estás viendo TODAS las reservaciones de todos los usuarios.</small>
+      </div>`;
     }
     
-    contenedor.innerHTML = html;
+    el.innerHTML = adminTitle + items.map(r => {
+      const isPast = r.fecha < hoy;
+      const isPending = r.estado === 'pendiente';
+      const isConfirmed = r.estado === 'confirmada';
+      const isCancelled = r.estado === 'cancelada';
+      
+      let statusTx = '';
+      let statusBg = '';
+      
+      if (isPending) {
+        statusTx = '⏳ PENDIENTE';
+        statusBg = '#f39c12';
+      } else if (isConfirmed && !isPast) {
+        statusTx = '✓ CONFIRMADA';
+        statusBg = '#27ae60';
+      } else if (isConfirmed && isPast) {
+        statusTx = '◉ COMPLETADA';
+        statusBg = '#7f8c8d';
+      } else if (isCancelled) {
+        statusTx = '✗ CANCELADA';
+        statusBg = '#e74c3c';
+      }
+      
+      const areaIcon = r.area === 'fumar' ? '🚬' : '🚭';
+      
+      const clienteHtml = isAdmin ? `
+        <div style="font-size: 0.75rem; color: #d9556b; margin-bottom: 0.3rem;">
+          👤 <strong>${r.nombre || '—'}</strong> | ${r.email || ''}
+        </div>
+      ` : '';
+      
+      let actionButtons = '';
+      if (isAdmin && !isPast && !isCancelled) {
+        if (isPending || isConfirmed) {
+          actionButtons = `
+            <div style="display: flex; gap: 0.5rem; margin-top: 0.75rem;">
+              <button class="act-btn green" onclick="Reservaciones.adminConfirmar('${r.id}')">✅ Aceptar</button>
+              <button class="act-btn red" onclick="Reservaciones.adminCancelar('${r.id}')">❌ Cancelar</button>
+            </div>
+          `;
+        }
+      } else if (!isAdmin && !isPast && isPending && !isCancelled) {
+        actionButtons = `
+          <button class="act-btn red" onclick="Reservaciones.cancelar('${r.id}')" style="margin-top: 0.5rem;">❌ Cancelar</button>
+        `;
+      }
+      
+      return `
+        <div class="res-item" style="margin-bottom: 1rem; padding: 1rem; background: white; border-radius: 16px; border-left: 4px solid ${isPending ? '#f39c12' : (isConfirmed ? '#27ae60' : '#e74c3c')};">
+          ${clienteHtml}
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap;">
+            <div>
+              <p class="ri-date" style="font-weight: bold;">📅 ${this._formatDate(r.fecha)}</p>
+              <p class="ri-meta" style="font-size: 0.8rem;">
+                🕐 ${r.horaEntrada} – ${r.horaSalida} | 👥 ${r.personas} persona(s)
+              </p>
+              ${r.notas ? `<p class="ri-meta" style="font-size: 0.75rem;">📝 ${r.notas}</p>` : ''}
+            </div>
+            <div style="text-align: right;">
+              <span class="ri-status" style="background: ${statusBg}; color: white; padding: 0.2rem 0.6rem; border-radius: 20px;">${statusTx}</span>
+              <span class="res-area" style="margin-left: 0.5rem;">${areaIcon} ${r.area === 'fumar' ? 'Fumar' : 'No Fumar'}</span>
+            </div>
+          </div>
+          ${actionButtons}
+        </div>
+      `;
+    }).join('');
   },
 
-  async confirmarReserva(id) {
+  async cancelar(id) {
+    if (!confirm('¿Cancelar esta reservación?')) return;
+    try {
+      const db = await getDB();
+      const { doc, updateDoc } = await import('https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js');
+      await updateDoc(doc(db, 'reservaciones', id), { estado: 'cancelada' });
+      UI.toast('Reservación cancelada.', 'info');
+    } catch(e) { 
+      UI.toast('Error al cancelar: ' + e.message, 'err'); 
+    }
+  },
+
+  async adminConfirmar(id) {
     if (!Auth.isAdmin()) {
       UI.toast('No tienes permisos de administrador.', 'err');
       return;
@@ -185,52 +241,48 @@ const Reservaciones = {
     if (!confirm('¿Confirmar esta reservación? Se enviará un ticket al cliente.')) return;
     
     try {
+      const db = await getDB();
       const { doc, updateDoc, getDoc } = await import('https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js');
       
-      await updateDoc(doc(window.sakuraDB, 'reservaciones', id), { estado: 'confirmada' });
+      const reservaRef = doc(db, 'reservaciones', id);
+      const reservaSnap = await getDoc(reservaRef);
+      const reserva = { id: reservaSnap.id, ...reservaSnap.data() };
       
-      const snap = await getDoc(doc(window.sakuraDB, 'reservaciones', id));
-      const reserva = { id: snap.id, ...snap.data() };
-      
+      await updateDoc(reservaRef, { estado: 'confirmada' });
       UI.toast('✅ Reservación confirmada', 'ok');
       
       if (typeof EmailService !== 'undefined') {
-        UI.toast('📧 Enviando ticket al correo...', 'info');
         await EmailService.enviarTicketPorEmail(reserva);
       }
       
-      const user = Auth.getUser();
-      if (user) await this.loadMisReservas(user.uid);
-      
-    } catch(e) {
-      console.error('Error al confirmar:', e);
-      UI.toast('Error: ' + e.message, 'err');
+    } catch(e) { 
+      UI.toast('Error: ' + e.message, 'err'); 
     }
   },
 
-  async cancelarReserva(id) {
+  async adminCancelar(id) {
+    if (!Auth.isAdmin()) {
+      UI.toast('No tienes permisos de administrador.', 'err');
+      return;
+    }
     if (!confirm('¿Cancelar esta reservación?')) return;
-    
     try {
+      const db = await getDB();
       const { doc, updateDoc } = await import('https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js');
-      await updateDoc(doc(window.sakuraDB, 'reservaciones', id), { estado: 'cancelada' });
-      UI.toast('❌ Reservación cancelada', 'info');
-      
-      const user = Auth.getUser();
-      if (user) await this.loadMisReservas(user.uid);
-      
-    } catch(e) {
-      console.error('Error al cancelar:', e);
-      UI.toast('Error: ' + e.message, 'err');
+      await updateDoc(doc(db, 'reservaciones', id), { estado: 'cancelada' });
+      UI.toast('❌ Reservación cancelada.', 'info');
+    } catch(e) { 
+      UI.toast('Error: ' + e.message, 'err'); 
     }
   },
 
-  _formatearFecha(dateStr) {
-    if (!dateStr) return 'Fecha no disponible';
+  _formatDate(dateStr) {
     const [y, m, d] = dateStr.split('-');
-    const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-    return `${parseInt(d)} de ${meses[parseInt(m)-1]} de ${y}`;
-  }
+    const months = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+    return `${d} ${months[+m - 1]} ${y}`;
+  },
+
+  getMisReservas: () => _misReservas,
 };
 
 window.Reservaciones = Reservaciones;
